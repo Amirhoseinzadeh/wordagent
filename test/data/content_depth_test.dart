@@ -268,6 +268,36 @@ void main() {
     });
   });
 
+  group('تصاویر واژه‌ها', () {
+    test('مسیر هر تصویر روی دیسک موجود است', () {
+      final broken = <String>[];
+      for (final word in bundle.words) {
+        final image = word.imageAsset;
+        if (image == null || image.isEmpty) continue;
+        if (!File(image).existsSync()) broken.add('${word.term} → $image');
+      }
+      expect(broken, isEmpty, reason: 'ارجاع تصویر شکسته: $broken');
+    });
+
+    test('تصویرها سبک‌اند و واژه‌های پایه تصویر دارند', () {
+      final withImage =
+          bundle.words.where((word) => word.imageAsset != null).toList();
+      expect(
+        withImage.length,
+        greaterThanOrEqualTo(10),
+        reason: 'تعداد واژه‌های تصویردار: ${withImage.length}',
+      );
+      for (final word in withImage) {
+        final bytes = File(word.imageAsset!).lengthSync();
+        expect(
+          bytes,
+          lessThan(200 * 1024),
+          reason: '${word.term} تصویر سنگین دارد (${bytes ~/ 1024}KB)',
+        );
+      }
+    });
+  });
+
   group('تلفظ واژه‌ها', () {
     test('هر واژه تلفظ IPA دارد', () {
       final missing = bundle.words
