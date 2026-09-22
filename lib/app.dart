@@ -11,6 +11,7 @@ import 'features/achievements/achievements_screen.dart';
 import 'features/challenge/challenge_screen.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/pack/pack_detail_screen.dart';
 import 'features/paywall/paywall_screen.dart';
 import 'features/placement/placement_screen.dart';
 import 'features/quiz/quiz_screen.dart';
@@ -115,6 +116,10 @@ class WordAgentApp extends StatelessWidget {
         final args = readArgs<WordListArgs>(settings) ??
             const WordListArgs(title: S.allWords);
         return AppRouter.build((_) => WordListScreen(args: args));
+      case AppRoutes.pack:
+        final args = readArgs<PackArgs>(settings);
+        if (args == null) return null;
+        return AppRouter.build((_) => PackDetailScreen(args: args));
       case AppRoutes.achievements:
         return AppRouter.build((_) => const AchievementsScreen());
       case AppRoutes.chat:

@@ -21,6 +21,7 @@ import '../../widgets/app_scaffold.dart';
 import '../../widgets/badges.dart';
 import '../../widgets/states.dart';
 import '../../widgets/word_tile.dart';
+import '../pack/pack_detail_screen.dart';
 import '../word_detail/word_detail_screen.dart';
 import '../word_list/word_list_screen.dart';
 
@@ -394,15 +395,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void _openPack(BuildContext context, StudyPack pack) {
     Navigator.of(context).push(
       AppRouter.build<void>(
-        settings: const RouteSettings(name: AppRoutes.wordList),
-        builder: (_) => WordListScreen(
-          args: WordListArgs(
-            title: pack.title,
-            subtitle: pack.description,
-            wordIds: pack.wordIds,
-            showFilters: false,
-          ),
-        ),
+        settings: const RouteSettings(name: AppRoutes.pack),
+        builder: (_) => PackDetailScreen(args: PackArgs(pack: pack)),
       ),
     );
   }

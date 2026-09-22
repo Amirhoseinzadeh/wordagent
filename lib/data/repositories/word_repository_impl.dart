@@ -53,7 +53,10 @@ class WordRepositoryImpl implements WordRepository {
   Map<String, Word> get wordIndex => _byId;
 
   Future<void> _load({required bool forceReload}) async {
-    final bundle = await _source.load(preferLocal: !forceReload);
+    // نسخه‌ی محلی (خروجی به‌روزرسانی آنلاین) همیشه بر نسخه‌ی بسته‌ی اپ
+    // اولویت دارد؛ `forceReload` فقط کش داخلی را دور می‌زند تا محتوای
+    // تازه دوباره خوانده شود.
+    final bundle = await _source.load();
     _cache = bundle;
     _words = bundle.words;
     _packs = bundle.packs;

@@ -18,6 +18,9 @@ import '../../widgets/app_scaffold.dart';
 import '../../widgets/badges.dart';
 import '../../widgets/states.dart';
 import '../../widgets/word_tile.dart';
+import '../challenge/challenge_screen.dart';
+import '../quiz/quiz_screen.dart';
+import '../word_detail/word_detail_screen.dart';
 import 'learn_screen.dart';
 
 /// مرکز یادگیری: انتخاب بین مرور، واژه‌ی تازه، تقویت نقاط ضعف و چالش.

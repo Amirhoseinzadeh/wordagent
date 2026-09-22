@@ -97,13 +97,21 @@ class FaFormat {
   }
 
   /// امتیاز عددی بزرگ را کوتاه می‌کند: ۱۲k → ۱۲ هزار.
+  ///
+  /// عددهای گرد بدون اعشار نمایش داده می‌شوند (۱۲ هزار، ۳ میلیون) و فقط
+  /// عددهای شکسته اعشار می‌گیرند (۱٫۵ میلیون).
   static String compactNumber(num value) {
     if (value.abs() < 1000) return number(value);
     if (value.abs() < 1000000) {
       final thousands = value / 1000;
-      final fixed = thousands.abs() >= 100 ? thousands.round() : thousands;
-      return '${number(fixed, decimals: fixed is int ? 0 : 1)} هزار';
+      if (thousands.abs() >= 100) return '${number(thousands.round())} هزار';
+      return '${number(thousands, decimals: _decimalsFor(thousands))} هزار';
     }
-    return '${number(value / 1000000, decimals: 1)} میلیون';
+    final millions = value / 1000000;
+    return '${number(millions, decimals: _decimalsFor(millions))} میلیون';
   }
+
+  /// اگر عدد گرد باشد صفر، وگرنه یک رقم اعشار.
+  static int _decimalsFor(double value) =>
+      value == value.roundToDouble() ? 0 : 1;
 }

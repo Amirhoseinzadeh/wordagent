@@ -163,6 +163,8 @@ class TextNormalizer {
   }
 
   /// حذف علامت‌های پایان جمله برای نمایش در تمرین جمله‌سازی.
+  ///
+  /// هم نشانه‌های لاتین و هم نشانه‌های فارسی/عربی («؟»، «…») پاک می‌شوند.
   static String stripEndPunctuation(String text) =>
-      text.replaceAll(RegExp(r'[.!?،؛,]+$'), '').trim();
+      text.replaceAll(RegExp(r'[.!?؟…،؛,]+$'), '').trim();
 }

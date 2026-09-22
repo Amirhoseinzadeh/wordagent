@@ -223,8 +223,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: GradientProgressBar(
-            value: progress,
+          child: AppProgressBar(
+            progress: progress,
             gradient: AppColors.brandGradient,
             height: 8,
           ),

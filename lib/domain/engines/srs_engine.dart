@@ -96,10 +96,12 @@ class SpacedRepetitionEngine {
       currentStreak += 1;
     }
 
-    interval = interval.clamp(relearnMinutes / (60 * 24), maxIntervalDays);
+    // ترتیب مهم است: اول لرزش، بعد محدودسازی؛ وگرنه لرزش می‌تواند
+    // فاصله را کمی از سقف یک‌ساله بالاتر ببرد.
     if (interval > 2) {
       interval = _fuzz(interval, state.wordId, state.totalReviews + 1);
     }
+    interval = interval.clamp(relearnMinutes / (60 * 24), maxIntervalDays);
 
     final dueAt = now.add(_durationFromDays(interval));
     final totalReviews = state.totalReviews + 1;

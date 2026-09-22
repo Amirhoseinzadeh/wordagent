@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/entities/pack.dart';
 import '../../domain/entities/quiz_question.dart';
 import '../../domain/entities/study_session.dart';
 import '../../domain/entities/word.dart';
@@ -89,6 +90,13 @@ class WordListArgs {
 
   final String? initialLevel;
   final bool showFilters;
+}
+
+/// آرگومان‌های مسیر بسته‌ی موضوعی.
+class PackArgs {
+  const PackArgs({required this.pack});
+
+  final StudyPack pack;
 }
 
 /// آرگومان‌های مسیر جزئیات واژه.
