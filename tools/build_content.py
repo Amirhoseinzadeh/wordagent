@@ -306,6 +306,42 @@ def load_topics() -> tuple[dict[str, list[str]], list[str]]:
     return mapping, problems
 
 
+# ------------------------------------------------------- کالوکیشن‌های تکمیلی
+
+def load_extra_collocations() -> tuple[dict[str, tuple[str, list[str]]], list[str]]:
+    """ترکیب‌های تکمیلی از `tools/content/extra_collocations.txt`.
+
+    قالب: `term||+ترکیب؛ترکیب` برای افزودن و `term||=ترکیب؛ترکیب` برای
+    جای‌گزینی. خروجی: term → (حالت، ترکیب‌ها) با حالت `+` یا `=`.
+    """
+    rows = read_lines(os.path.join(CONTENT_DIR, "extra_collocations.txt"))
+    mapping: dict[str, tuple[str, list[str]]] = {}
+    problems: list[str] = []
+    for row in rows:
+        if len(row) < 2:
+            problems.append(f"extra_collocations.txt خط نامعتبر: {'||'.join(row)[:40]}")
+            continue
+        term = row[0].lower()
+        raw = row[1].strip()
+        mode = "+"
+        if raw.startswith("="):
+            mode = "="
+            raw = raw[1:].strip()
+        elif raw.startswith("+"):
+            raw = raw[1:].strip()
+        items = split_multi(raw)
+        if not items:
+            problems.append(f"{term}: ترکیب خالی")
+            continue
+        if term in mapping:
+            problems.append(f"extra_collocations.txt واژه‌ی تکراری: {term}")
+            continue
+        mapping[term] = (mode, items)
+    return mapping, problems
+
+
+
+
 # --------------------------------------------------------------- تلفظ (IPA)
 
 IRREGULAR_FORMS: dict[str, set[str]] = {
@@ -566,11 +602,14 @@ def build_words(
     ranks: dict,
     topics: dict[str, list[str]] | None = None,
     previous_ipa: dict[str, str] | None = None,
+    extra_collocations: dict[str, tuple[str, list[str]]] | None = None,
 ) -> tuple[list[dict], list[str]]:
     words: list[dict] = []
     warnings: list[str] = []
     topics = topics or {}
+    extra_collocations = extra_collocations or {}
     tagged: set[str] = set()
+    used_collocations: set[str] = set()
     seen_ids: set[str] = set()
 
     for level in LEVELS:
@@ -611,10 +650,27 @@ def build_words(
                 warnings.append(f"{term}: در هیچ مثالی نیامده → {examples[0]['en'][:40]}")
             if len(row) > 9 and row[9]:
                 entry["col"] = split_multi(row[9])
+            extra = extra_collocations.get(term.lower())
+            if extra is not None:
+                mode, items = extra
+                used_collocations.add(term.lower())
+                base = [] if mode == "=" else list(entry.get("col", []))
+                for item in items:
+                    if item not in base:
+                        base.append(item)
+                if base:
+                    entry["col"] = base
+                else:
+                    entry.pop("col", None)
             if len(row) > 10 and row[10]:
                 entry["syn"] = split_multi(row[10])
             if len(row) > 11 and row[11]:
                 entry["ant"] = split_multi(row[11])
+            collocations = entry.get("col", [])
+            if collocations and not example_has_term(term, collocations[0]):
+                warnings.append(
+                    f"{term}: ترکیب اول واژه را در خود ندارد → {collocations[0][:40]}"
+                )
             if len(row) > 12 and row[12]:
                 entry["note"] = row[12]
             if len(row) > 13 and row[13]:
@@ -716,10 +772,11 @@ def main() -> int:
     frequency = _load_frequency()
     previous_ipa, previous_ranks = load_previous()
     topics, topic_problems = load_topics()
+    extras, extra_problems = load_extra_collocations()
     # رتبه‌ی کاربرد: عدد تازه، و اگر پیکره در دسترس نبود همان عدد قبلی.
     ranks = dict(previous_ranks)
     ranks.update(frequency)
-    words, warnings = build_words(cmu, ranks, topics, previous_ipa)
+    words, warnings = build_words(cmu, ranks, topics, previous_ipa, extras)
     media_count = attach_media(words)
     packs = build_packs(words)
 
@@ -757,11 +814,14 @@ def main() -> int:
     )
     manifest["topicTags"] = dict(topic_counter.most_common())
     manifest["withForms"] = sum(1 for word in words if word.get("forms"))
+    manifest["withCollocations"] = sum(
+        1 for word in words if len(word.get("col", [])) >= 2
+    )
     with open(os.path.join(OUT_DIR, "manifest.json"), "w", encoding="utf-8") as handle:
         json.dump(manifest, handle, ensure_ascii=False, indent=2)
     print("  ✓ manifest.json")
 
-    problems = list(topic_problems)
+    problems = list(topic_problems) + list(extra_problems)
     if warnings:
         print(f"\n{len(warnings)} هشدار:")
         for item in warnings[:40]:
@@ -773,9 +833,11 @@ def main() -> int:
 
     tagged = sum(1 for word in words if word.get("topics"))
     forms = sum(1 for word in words if word.get("forms"))
+    rich = sum(1 for word in words if len(word.get("col", [])) >= 2)
     print(
         f"\nجمع: {len(words)} واژه، {media_count} دیالوگ سینمایی، {len(packs)} بسته،"
-        f" {tagged} واژه برچسب‌دار، {forms} واژه با شکل‌های صرفی"
+        f" {tagged} واژه برچسب‌دار، {forms} واژه با شکل‌های صرفی،"
+        f" {rich} واژه با دو کالوکیشن یا بیشتر"
     )
     return 1 if problems else 0
 

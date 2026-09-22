@@ -248,13 +248,28 @@ class QuizFactory {
     );
   }
 
+  /// ترکیبی که خودِ واژه را در بر دارد.
+  ///
+  /// تمرین کالوکیشن «کدام ترکیب با این واژه درست است؟» را می‌پرسد؛ پس هم
+  /// پاسخ درست و هم گزینه‌های نادرست باید واژه‌ی خودشان را داشته باشند تا
+  /// سؤال معنا پیدا کند.
+  static String _ownCollocation(Word word) {
+    final term = word.term.toLowerCase();
+    for (final item in word.collocations) {
+      if (item.toLowerCase().contains(term)) return item;
+    }
+    return word.collocations.first;
+  }
+
   QuizQuestion _collocation(Word word, List<Word> pool) {
-    final correct = word.collocations.first;
+    final correct = _ownCollocation(word);
     final others = <String>[];
     final shuffledPool = List<Word>.from(pool)..shuffle(_random);
     for (final candidate in shuffledPool) {
       if (candidate.id == word.id || candidate.collocations.isEmpty) continue;
-      others.add(candidate.collocations.first);
+      final pick = _ownCollocation(candidate);
+      if (pick == correct || others.contains(pick)) continue;
+      others.add(pick);
       if (others.length >= 3) break;
     }
     final choices = _shuffled([correct, ...others]);

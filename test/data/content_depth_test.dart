@@ -43,6 +43,14 @@ List<String> _valuesOf(Word word, String label) => word.forms
 Word _word(ContentBundle bundle, String term) =>
     bundle.words.firstWhere((word) => word.term == term);
 
+/// آیا این ترکیب، خودِ واژه را در بر دارد؟
+///
+/// همان سنجشی که موتور تمرین برای انتخاب پاسخ درست کالوکیشن به کار می‌برد
+/// (`contains`): پس «bedroom» برای «room»، «go swimming» برای «swim» و
+/// «the storm abates» برای «abate» هم پذیرفته می‌شوند.
+bool _containsTerm(String phrase, String term) =>
+    phrase.toLowerCase().contains(term.toLowerCase());
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -223,6 +231,40 @@ void main() {
       for (final term in noForms) {
         expect(_word(bundle, term).forms, isEmpty, reason: 'شکل اضافی برای $term');
       }
+    });
+  });
+
+  group('کالوکیشن‌ها', () {
+    test('هر واژه دست‌کم یک کالوکیشن حاوی خودش دارد', () {
+      final offenders = <String>[];
+      for (final word in bundle.words) {
+        final hasOwn = word.collocations
+            .any((item) => _containsTerm(item, word.term));
+        if (!hasOwn) offenders.add('${word.term} → ${word.collocations}');
+      }
+      expect(
+        offenders,
+        isEmpty,
+        reason: 'واژه‌های بدون کالوکیشن مرتبط: $offenders',
+      );
+    });
+
+    test('کالوکیشن‌ها تکراری نیستند', () {
+      for (final word in bundle.words) {
+        final unique = word.collocations.toSet();
+        expect(unique.length, word.collocations.length,
+            reason: 'کالوکیشن تکراری در ${word.term}');
+      }
+    });
+
+    test('واژه‌های پرکاربرد دست‌کم دو کالوکیشن دارند', () {
+      final rich =
+          bundle.words.where((word) => word.collocations.length >= 2).length;
+      expect(
+        rich,
+        greaterThanOrEqualTo(350),
+        reason: 'فقط $rich واژه دو کالوکیشن یا بیشتر دارد',
+      );
     });
   });
 

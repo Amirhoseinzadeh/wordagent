@@ -215,6 +215,39 @@ void main() {
       );
     });
 
+    test('کالوکیشن، ترکیبی را انتخاب می‌کند که خودِ واژه در آن باشد', () {
+      final factory = QuizFactory(random: math.Random(29));
+      // ترکیب اول واژه خودش را ندارد؛ ترکیب دوم دارد.
+      final word = makeWord(
+        id: 'c9',
+        term: 'restaurant',
+        collocations: <String>['reserve a table', 'a good restaurant'],
+      );
+      final customPool = <Word>[
+        makeWord(id: 'p1', term: 'plan', collocations: <String>['make a plan']),
+        makeWord(id: 'p2', term: 'money', collocations: <String>['spend money']),
+        makeWord(id: 'p3', term: 'goal', collocations: <String>['set a goal']),
+        makeWord(id: 'p4', term: 'risk', collocations: <String>['take a risk']),
+      ];
+      final question = factory.build(
+        word: word,
+        type: QuizType.collocation,
+        pool: customPool,
+      );
+      expect(question.correctAnswer, 'a good restaurant');
+      expect(question.choices, contains('a good restaurant'));
+      // هر گزینه باید ترکیب واژه‌ی خودش باشد، نه ترکیب واژه‌ی دیگر.
+      for (final choice in
+          question.choices.where((c) => c != 'a good restaurant')) {
+        expect(choice.toLowerCase(), isNot(contains('restaurant')));
+        expect(
+          customPool.any((w) => w.collocations.contains(choice)),
+          isTrue,
+          reason: 'گزینه‌ی بی‌ربط: $choice',
+        );
+      }
+    });
+
     test('supports برای انواع بدون محتوای لازم پاسخ درست می‌دهد', () {
       final factory = QuizFactory(random: math.Random(19));
       final bare = makeWord(
