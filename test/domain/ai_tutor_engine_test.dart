@@ -5,7 +5,6 @@ import 'package:wordagent/domain/entities/cefr_level.dart';
 import 'package:wordagent/domain/entities/review_state.dart';
 import 'package:wordagent/domain/entities/study_session.dart';
 import 'package:wordagent/domain/entities/user_profile.dart';
-import 'package:wordagent/domain/entities/word.dart';
 
 import '../helpers/fixtures.dart';
 
