@@ -391,14 +391,19 @@ void main() {
         ];
 
     test('فقط واژه‌های هم‌موضوع با هدف را برمی‌گرداند', () {
+      // هدف «سفر و مکالمه» موضوع‌های travel/food/home/nature/money/daily دارد؛
+      // پس g4 (طبیعت) هم‌موضوع است ولی g3 (کسب‌وکار) نیست.
       final result = builder.goalWords(
         words: goalPool(),
         states: const <String, ReviewState>{},
-        profile: profile, // هدف: سفر و مکالمه
-        limit: 6,
+        profile: profile,
+        limit: 4,
       );
-      expect(result.map((word) => word.id), contains('g1'));
-      expect(result.map((word) => word.id), contains('g2'));
+      expect(
+        result.map((word) => word.id).toList(),
+        <String>['g4', 'g2', 'g1', 'g5'],
+        reason: 'هم‌موضوع‌ها به ترتیب کاربرد می‌آیند',
+      );
       expect(
         result.map((word) => word.id),
         isNot(contains('g3')),
@@ -406,16 +411,18 @@ void main() {
       );
     });
 
-    test('پرکاربردترها اول می‌آیند', () {
+    test('هم‌موضوعی بر پرکاربردبودن مقدم است', () {
+      // g3 (کسب‌وکار، رتبه ۱۰۰) از g5 (سفر، رتبه ۱۲۰۰) پرکاربردتر است،
+      // اما چون با هدف کاربر هم‌موضوع نیست، بعد از آن می‌آید.
       final result = builder.goalWords(
         words: goalPool(),
         states: const <String, ReviewState>{},
         profile: profile,
-        limit: 3,
+        limit: 5,
       );
-      expect(result.first.id, 'g2', reason: 'رتبه‌ی ۳۰۰ از ۹۰۰ و ۱۲۰۰ کمتر است');
-      expect(result.map((word) => word.id).toList(),
-          <String>['g2', 'g1', 'g5']);
+      final ids = result.map((word) => word.id).toList();
+      expect(ids.take(4).toList(), <String>['g4', 'g2', 'g1', 'g5']);
+      expect(ids.last, 'g3', reason: 'تکمیل‌کننده‌ها آخر می‌آیند');
     });
 
     test('واژه‌های شروع‌شده پیشنهاد نمی‌شوند', () {
@@ -463,6 +470,7 @@ void main() {
         makeWord(id: 'f1', term: 'talent', topics: <String>['work']),
         makeWord(id: 'f2', term: 'method', topics: <String>['study']),
       ];
+      // t1 تنها واژه‌ی سفر است؛ دو واژه‌ی دیگر تکمیل می‌کنند.
       final result = builder.goalWords(
         words: pool,
         states: const <String, ReviewState>{},
