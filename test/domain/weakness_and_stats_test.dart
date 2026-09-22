@@ -57,15 +57,18 @@ void main() {
     });
 
     test('واژه‌ی بی‌خطا در فهرست ضعف نمی‌آید', () {
+      // توجه: واژه‌ی بی‌خطا باید بیرون از بازه‌ی weakStates باشد، وگرنه
+      // وضعیت ضعیف روی همان شناسه نوشته می‌شود.
+      final healthyId = words[10].id;
       final states = <String, ReviewState>{
-        words[0].id: makeState(
-          wordId: words[0].id,
+        ...weakStates(count: 3),
+        healthyId: makeState(
+          wordId: healthyId,
           totalReviews: 5,
           correctReviews: 5,
           repetitions: 4,
           intervalDays: 20,
         ),
-        ...weakStates(count: 3),
       };
       final report = weakness.analyze(
         words: words,
@@ -73,7 +76,7 @@ void main() {
         sessions: const <StudySession>[],
         now: testNow,
       );
-      expect(report.weakWords.map((entry) => entry.word.id), isNot(contains(words[0].id)));
+      expect(report.weakWords.map((entry) => entry.word.id), isNot(contains(healthyId)));
     });
 
     test('ترتیب ضعف با امتیاز نزولی است', () {
@@ -242,17 +245,29 @@ void main() {
         makeSession(total: 12, correct: 6, startedAt: testNow.subtract(const Duration(days: 2))),
         makeSession(total: 8, correct: 8, startedAt: testNow.subtract(const Duration(days: 2))),
       ];
+      final states = <String, ReviewState>{
+        for (var index = 0; index < 4; index++)
+          words[index].id: makeState(
+            wordId: words[index].id,
+            totalReviews: 5,
+            correctReviews: 4,
+            repetitions: 3,
+            intervalDays: 12,
+            dueAt: testNow,
+          ),
+      };
       final result = stats.compute(
-        states: const <String, ReviewState>{},
+        states: states,
         sessions: sessions,
         streak: const StreakState(),
         now: testNow,
       );
       expect(result.totalSessions, 3);
+      expect(result.totalReviews, 20);
       expect(result.totalMinutes, greaterThan(0));
       expect(result.longestSessionMinutes, greaterThan(0));
       expect(result.last30Days, isNotEmpty);
-      final activeDays = result.last30Days.where((day) => day.reviews > 0).length;
+      final activeDays = result.last30Days.where((day) => day.hasActivity).length;
       expect(activeDays, 2);
       expect(result.averageReviewsPerActiveDay, greaterThan(0));
     });

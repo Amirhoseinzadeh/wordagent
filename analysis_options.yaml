@@ -11,13 +11,13 @@ analyzer:
 
 linter:
   rules:
+    avoid_empty_else: true
+    avoid_print: true
+    prefer_single_quotes: true
+    use_super_parameters: true
+    unnecessary_await_in_return: true
     # فیلدهای موتورها و مخزن‌ها خصوصی‌اند (`_words`، `_profile`) و پارامترهای
     # نام‌دار نمی‌توانند با «_» شروع شوند؛ پس فرم اولیه‌ساز (`this._x`) این‌جا
     # فقط با افشای عمومی فیلدها یا تغییر نام پارامترها ممکن است. برای حفظ
     # کپسول‌سازی، این قانون خاموش است.
     prefer_initializing_formals: false
-    - avoid_empty_else
-    - avoid_print
-    - prefer_single_quotes
-    - use_super_parameters
-    - unnecessary_await_in_return

@@ -145,11 +145,15 @@ void main() {
 
   group('راه‌اندازی کامل اپ', () {
     testWidgets('اپ با محتوای واقعی بدون خطا بالا می‌آید و راست‌به‌چپ است', (tester) async {
-      final container = await AppContainer.boot(
-        store: MemoryLocalStore(),
-        clock: AppClock(provider: () => testNow),
-        audio: FakeAudioService(),
-      );
+      // خواندن فایل‌های محتوا کار واقعی (I/O) است و در ناحیه‌ی زمان جعلی
+      // تست‌های ویجت هرگز کامل نمی‌شود؛ پس با runAsync اجرا می‌شود.
+      final container = (await tester.runAsync(
+        () => AppContainer.boot(
+          store: MemoryLocalStore(),
+          clock: AppClock(provider: () => testNow),
+          audio: FakeAudioService(),
+        ),
+      ))!;
       expect(container.contentVersion, isNotNull);
 
       await tester.pumpWidget(WordAgentApp(container: container));

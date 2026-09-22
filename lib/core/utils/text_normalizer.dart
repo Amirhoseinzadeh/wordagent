@@ -18,7 +18,11 @@ class TextNormalizer {
   /// نرمال‌سازی متن فارسی برای مقایسه.
   static String normalizeFa(String input) {
     var text = input.trim().toLowerCase();
-    text = text.replaceAll('ي', 'ی').replaceAll('ك', 'ک');
+    // «ي» و «ى» (الف مقصوره) هر دو در تایپ عربی/موبایل برای «ی» می‌آیند.
+    text = text
+        .replaceAll('ي', 'ی')
+        .replaceAll('ى', 'ی')
+        .replaceAll('ك', 'ک');
     text = text.replaceAll('ۀ', 'ه').replaceAll('ة', 'ه');
     text = text.replaceAll('أ', 'ا').replaceAll('إ', 'ا').replaceAll('آ', 'آ');
     text = text.replaceAll('ؤ', 'و').replaceAll('ئ', 'ی');

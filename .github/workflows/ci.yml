@@ -29,7 +29,7 @@ jobs:
   analyze-and-test:
     name: analyze-and-test
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - name: دریافت کد
@@ -47,26 +47,31 @@ jobs:
       - name: وابستگی‌ها
         run: flutter pub get
 
-      # هر سه مرحله اجرا می‌شوند تا در یک اجرا بیشترین بازخورد را بگیریم؛
-      # خروجی هر مرحله در فایل ذخیره می‌شود و در گام «گزارش» به یک کامنت
-      # روی کامیت تبدیل می‌شود (خواندن لاگ اکشن‌ها از این محیط ممکن نیست).
-      - name: تحلیل، تست و ساخت
-        id: checks
+      # هر مرحله مستقل و با سقف زمانی اجرا می‌شود تا یک توقف (مثلاً تست
+      # بی‌پایان) بقیه‌ی بازخورد را از بین نبرد.
+      - name: تحلیل ایستا
+        continue-on-error: true
+        timeout-minutes: 12
         run: |
-          set +e
           flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1
-          ANALYZE_EXIT=$?
-          flutter test --reporter expanded > test.txt 2>&1
-          TEST_EXIT=$?
+          echo "ANALYZE_EXIT=$?" > analyze.status
+          tail -3 analyze.txt
+
+      - name: تست‌ها
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          flutter test --reporter expanded --timeout 60s > test.txt 2>&1
+          echo "TEST_EXIT=$?" > test.status
+          tail -3 test.txt
+
+      - name: ساخت نسخه‌ی وب (کنترل نهایی کامپایل)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
           flutter build web --release > build.txt 2>&1
-          BUILD_EXIT=$?
-          {
-            echo "ANALYZE_EXIT=$ANALYZE_EXIT"
-            echo "TEST_EXIT=$TEST_EXIT"
-            echo "BUILD_EXIT=$BUILD_EXIT"
-          } > status.env
-          cat status.env
-          exit 0
+          echo "BUILD_EXIT=$?" > build.status
+          tail -3 build.txt
 
       - name: گزارش
         if: always()
@@ -78,7 +83,9 @@ jobs:
             echo "## CI report — \`${GITHUB_SHA:0:7}\`"
             echo
             echo '```'
-            cat status.env
+            for stage in analyze test build; do
+              if [ -f "$stage.status" ]; then cat "$stage.status"; else echo "${stage}_EXIT=missing"; fi
+            done
             echo '```'
             echo
             echo "### تست‌های شکست‌خورده (فهرست)"
@@ -117,10 +124,17 @@ jobs:
       - name: نتیجه‌ی نهایی
         run: |
           set +e
-          cat status.env
-          source status.env
-          if [ "$ANALYZE_EXIT" != "0" ] || [ "$TEST_EXIT" != "0" ] || [ "$BUILD_EXIT" != "0" ]; then
-            echo "یکی از مرحله‌ها شکست خورد."
-            exit 1
+          for stage in analyze test build; do
+            if [ -f "$stage.status" ]; then
+              cat "$stage.status"
+            else
+              echo "مرحله‌ی $stage به پایان نرسید (توقف یا خطای اجرا)."
+              exit 1
+            fi
+          done
+          if grep -q '_EXIT=0' analyze.status && grep -q '_EXIT=0' test.status && grep -q '_EXIT=0' build.status; then
+            echo "همه‌ی مرحله‌ها با موفقیت گذشتند."
+            exit 0
           fi
-          echo "همه‌ی مرحله‌ها با موفقیت گذشتند."
+          echo "یکی از مرحله‌ها شکست خورد."
+          exit 1

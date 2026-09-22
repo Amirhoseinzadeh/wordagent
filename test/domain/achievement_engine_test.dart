@@ -162,7 +162,11 @@ void main() {
       expect(engine.completionRatio(const <AchievementProgress>[]), 0);
       final all = <AchievementProgress>[
         for (final achievement in AchievementCatalog.all)
-          AchievementProgress(id: achievement.id, current: achievement.target),
+          AchievementProgress(
+            id: achievement.id,
+            current: achievement.target,
+            unlockedAt: testNow,
+          ),
       ];
       expect(engine.completionRatio(all), 1);
     });

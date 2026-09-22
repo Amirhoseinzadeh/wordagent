@@ -18,7 +18,6 @@ import '../../widgets/animations.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/badges.dart';
 import '../../widgets/states.dart';
 import '../achievements/achievements_screen.dart';
 import '../chat/chat_screen.dart';

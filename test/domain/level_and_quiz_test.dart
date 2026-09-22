@@ -17,6 +17,13 @@ void main() {
           maxQuestions: maxQuestions,
         );
 
+    /// در جریان واقعی اپ، سؤال جاری پیش از پاسخ خوانده می‌شود؛ این کمکی همان
+    /// ترتیب را در تست‌ها رعایت می‌کند (ثبت پاسخ بدون سؤال جاری نادیده می‌ماند).
+    void answer(PlacementEngine engine, {required bool isCorrect}) {
+      expect(engine.currentQuestion, isNotNull, reason: 'سؤال جاری ساخته نشده است');
+      engine.submit(isCorrect: isCorrect);
+    }
+
     test('با بانک کوچک غیرقابل استفاده است', () {
       expect(engineWith(makeWords(5)).isUsable, isFalse);
       expect(engineWith(makeWords(12)).isUsable, isTrue);
@@ -26,7 +33,7 @@ void main() {
       final engine = engineWith(makeWords(24, level: CefrLevel.c1), maxQuestions: 12);
       var guard = 0;
       while (!engine.isFinished && guard++ < 100) {
-        engine.submit(isCorrect: true);
+        answer(engine, isCorrect: true);
       }
       final result = engine.result;
       expect(result.level.index, greaterThanOrEqualTo(CefrLevel.b1.index));
@@ -40,7 +47,7 @@ void main() {
       final engine = engineWith(makeWords(24, level: CefrLevel.b2), maxQuestions: 12);
       var guard = 0;
       while (!engine.isFinished && guard++ < 100) {
-        engine.submit(isCorrect: false);
+        answer(engine, isCorrect: false);
       }
       final result = engine.result;
       expect(result.level, CefrLevel.a1);
@@ -53,7 +60,7 @@ void main() {
       expect(engine.progress, 0);
       for (var index = 0; index < 8; index++) {
         expect(engine.isFinished, isFalse);
-        engine.submit(isCorrect: index.isEven);
+        answer(engine, isCorrect: index.isEven);
       }
       expect(engine.isFinished, isTrue);
       expect(engine.answeredCount, 8);
@@ -74,7 +81,7 @@ void main() {
     test('سطح برآوردشده با پاسخ‌های ترکیبی متعادل است', () {
       final engine = engineWith(makeWords(30, level: CefrLevel.b1), maxQuestions: 12);
       for (var index = 0; index < 12; index++) {
-        engine.submit(isCorrect: index % 2 == 0);
+        answer(engine, isCorrect: index % 2 == 0);
       }
       final result = engine.result;
       expect(result.totalQuestions, 12);
@@ -110,8 +117,9 @@ void main() {
     test('پاسخ بدون سؤال جاری نادیده گرفته می‌شود', () {
       final engine = engineWith(makeWords(30), maxQuestions: 4);
       for (var index = 0; index < 4; index++) {
-        engine.submit(isCorrect: true);
+        answer(engine, isCorrect: true);
       }
+      // پاسخ بدون خواندن سؤال جاری نادیده می‌ماند.
       engine.submit(isCorrect: true);
       expect(engine.answeredCount, 4);
     });
