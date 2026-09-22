@@ -95,6 +95,7 @@ class S {
   static const startReview = 'شروع مرور';
   static const startLearn = 'یادگیری لغت جدید';
   static const dailyChallenge = 'چالش روزانه';
+  static const goalWordsTitle = 'بر اساس هدف تو';
   static const wordOfTheDay = 'لغت امروز';
   static const dailyGoal = 'هدف امروز';
   static const streakLabel = 'زنجیره‌ی روزانه';

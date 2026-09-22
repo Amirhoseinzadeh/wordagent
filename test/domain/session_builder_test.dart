@@ -374,6 +374,127 @@ void main() {
     });
   });
 
+  group('goalWords — پیشنهاد بر اساس هدف', () {
+    /// واژه‌های آزمون با موضوع‌های مشخص و رتبه‌ی کاربرد متفاوت.
+    List<Word> goalPool() => <Word>[
+          makeWord(id: 'g1', term: 'journey', topics: <String>['travel'])
+              .copyWith(frequencyRank: 900),
+          makeWord(id: 'g2', term: 'hotel', topics: <String>['travel'],
+                  level: CefrLevel.a2)
+              .copyWith(frequencyRank: 300),
+          makeWord(id: 'g3', term: 'invoice', topics: <String>['business'])
+              .copyWith(frequencyRank: 100),
+          makeWord(id: 'g4', term: 'sunset', topics: <String>['nature'])
+              .copyWith(frequencyRank: 50),
+          makeWord(id: 'g5', term: 'airport', topics: <String>['travel'])
+              .copyWith(frequencyRank: 1200),
+        ];
+
+    test('فقط واژه‌های هم‌موضوع با هدف را برمی‌گرداند', () {
+      final result = builder.goalWords(
+        words: goalPool(),
+        states: const <String, ReviewState>{},
+        profile: profile, // هدف: سفر و مکالمه
+        limit: 6,
+      );
+      expect(result.map((word) => word.id), contains('g1'));
+      expect(result.map((word) => word.id), contains('g2'));
+      expect(
+        result.map((word) => word.id),
+        isNot(contains('g3')),
+        reason: 'واژه‌ی کسب‌وکار با هدف سفر هم‌موضوع نیست',
+      );
+    });
+
+    test('پرکاربردترها اول می‌آیند', () {
+      final result = builder.goalWords(
+        words: goalPool(),
+        states: const <String, ReviewState>{},
+        profile: profile,
+        limit: 3,
+      );
+      expect(result.first.id, 'g2', reason: 'رتبه‌ی ۳۰۰ از ۹۰۰ و ۱۲۰۰ کمتر است');
+      expect(result.map((word) => word.id).toList(),
+          <String>['g2', 'g1', 'g5']);
+    });
+
+    test('واژه‌های شروع‌شده پیشنهاد نمی‌شوند', () {
+      final states = <String, ReviewState>{
+        'g2': makeState(wordId: 'g2', totalReviews: 2),
+      };
+      final result = builder.goalWords(
+        words: goalPool(),
+        states: states,
+        profile: profile,
+        limit: 6,
+      );
+      expect(result.map((word) => word.id), isNot(contains('g2')));
+    });
+
+    test('واژه‌های ویژه فقط با اجازه می‌آیند', () {
+      final pool = <Word>[
+        makeWord(id: 'p1', term: 'voyage', topics: <String>['travel'],
+            premium: true),
+      ];
+      expect(
+        builder.goalWords(
+          words: pool,
+          states: const <String, ReviewState>{},
+          profile: profile,
+        ),
+        isEmpty,
+      );
+      expect(
+        builder
+            .goalWords(
+              words: pool,
+              states: const <String, ReviewState>{},
+              profile: profile,
+              allowPremium: true,
+            )
+            .map((word) => word.id),
+        <String>['p1'],
+      );
+    });
+
+    test('اگر واژه‌ی هم‌موضوع کم بود، از هم‌سطح‌ها تکمیل می‌کند', () {
+      final pool = <Word>[
+        makeWord(id: 't1', term: 'trip', topics: <String>['travel']),
+        makeWord(id: 'f1', term: 'talent', topics: <String>['work']),
+        makeWord(id: 'f2', term: 'method', topics: <String>['study']),
+      ];
+      final result = builder.goalWords(
+        words: pool,
+        states: const <String, ReviewState>{},
+        profile: profile,
+        limit: 3,
+      );
+      expect(result, hasLength(3));
+      expect(result.first.id, 't1');
+      expect(result.map((word) => word.id), containsAll(<String>['f1', 'f2']));
+    });
+
+    test('بدون موضوع یا با limit صفر، خالی برمی‌گرداند', () {
+      expect(
+        builder.goalWords(
+          words: goalPool(),
+          states: const <String, ReviewState>{},
+          profile: profile,
+          limit: 0,
+        ),
+        isEmpty,
+      );
+      expect(
+        builder.goalWords(
+          words: const <Word>[],
+          states: const <String, ReviewState>{},
+          profile: profile,
+        ),
+        isEmpty,
+      );
+    });
+  });
+
   group('weakPlan', () {
     test('واژه‌های ضعیف را به جلسه‌ی تقویت تبدیل می‌کند', () async {
       final states = <String, ReviewState>{

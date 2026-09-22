@@ -28,6 +28,7 @@ import '../quiz/quiz_screen.dart';
 import '../review/learn_screen.dart';
 import '../settings/settings_screen.dart';
 import '../word_detail/word_detail_screen.dart';
+import '../word_list/word_list_screen.dart';
 
 /// خانه‌ی اپ: خلاصه‌ی امروز، برنامه‌ی مطالعه و میان‌برهای مهم.
 class HomeScreen extends StatelessWidget {
@@ -63,6 +64,7 @@ class HomeScreen extends StatelessWidget {
         final learnPlan = controller.learnPlan;
         final challengePlan = controller.challengePlan;
         final wordOfDay = controller.wordOfTheDay;
+        final goalWords = controller.goalWords;
         final goalPercent = xp.dailyXp == 0
             ? 0
             : ((xp.dailyXp / (controller.settings.dailyGoalMinutes * 8).clamp(40, 2000)) *
@@ -197,6 +199,56 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
+                      if (goalWords.isNotEmpty) ...<Widget>[
+                        SectionHeader(
+                          title: S.goalWordsTitle,
+                          subtitle: 'واژه‌های هم‌موضوع با هدف '
+                              '«${controller.profile.goal.faTitle}»',
+                          icon: Icons.flag_rounded,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        for (final word in goalWords)
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: AppSpacing.xs),
+                            child: WordTile(
+                              word: word,
+                              state: controller.states[word.id],
+                              dense: true,
+                              onTap: () => Navigator.of(context).push(
+                                AppRouter.build<void>(
+                                  settings: const RouteSettings(
+                                    name: AppRoutes.wordDetail,
+                                  ),
+                                  builder: (_) => WordDetailScreen(
+                                    args: WordDetailArgs(word: word),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (goalWords.length >= 6)
+                          Center(
+                            child: TextButton(
+                              onPressed: () => Navigator.of(context).push(
+                                AppRouter.build<void>(
+                                  settings: const RouteSettings(
+                                    name: AppRoutes.wordList,
+                                  ),
+                                  builder: (_) => WordListScreen(
+                                    args: WordListArgs(
+                                      title: S.goalWordsTitle,
+                                      subtitle: 'واژه‌های هم‌موضوع با هدف تو',
+                                      words: goalWords,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: const Text(S.seeAll),
+                            ),
+                          ),
+                        const SizedBox(height: AppSpacing.md),
+                      ],
                       if (wordOfDay != null) ...<Widget>[
                         SectionHeader(
                           title: S.wordOfTheDay,

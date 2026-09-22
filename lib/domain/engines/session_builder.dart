@@ -109,6 +109,59 @@ class SessionBuilder {
     return entries.take(limit).map((entry) => entry.$1).toList(growable: false);
   }
 
+  /// واژه‌های هم‌موضوع با هدف یادگیری کاربر (برای پیشنهاد هدف‌محور).
+  ///
+  /// این متد پایه‌ی بخش «بر اساس هدف تو» در صفحه‌ی خانه است: واژه‌هایی که
+  /// کاربر هنوز شروع نکرده و موضوعشان با هدفی که در آغاز انتخاب کرده
+  /// هم‌خوان است. مرتب‌سازی با پرکاربردترین‌ها شروع می‌شود و اگر تعداد
+  /// کافی نبود، از واژه‌های همان سطح تکمیل می‌شود.
+  List<Word> goalWords({
+    required List<Word> words,
+    required Map<String, ReviewState> states,
+    required UserProfile profile,
+    int limit = 6,
+    bool allowPremium = false,
+  }) {
+    final goalTopics = profile.goal.topics.toSet();
+    if (goalTopics.isEmpty || limit <= 0) return const <Word>[];
+
+    bool available(Word word) =>
+        !states.containsKey(word.id) && (allowPremium || !word.premium);
+
+    int rankOf(Word word) => word.frequencyRank == 0 ? 1 << 30 : word.frequencyRank;
+
+    final matches = words
+        .where(available)
+        .where((word) => word.topics.any(goalTopics.contains))
+        .toList(growable: false)
+      ..sort((a, b) {
+        final byRank = rankOf(a).compareTo(rankOf(b));
+        if (byRank != 0) return byRank;
+        return a.term.compareTo(b.term);
+      });
+    if (matches.length >= limit) {
+      return matches.take(limit).toList(growable: false);
+    }
+
+    // تکمیل با واژه‌های نزدیک به سطح کاربر.
+    final selected = <String>{for (final word in matches) word.id};
+    final filler = words
+        .where(available)
+        .where((word) => !selected.contains(word.id))
+        .where((word) =>
+            (word.level.difficulty - profile.level.difficulty).abs() <= 1)
+        .toList(growable: false)
+      ..sort((a, b) {
+        final byRank = rankOf(a).compareTo(rankOf(b));
+        if (byRank != 0) return byRank;
+        return a.term.compareTo(b.term);
+      });
+    return <Word>[
+      ...matches,
+      ...filler.take(limit - matches.length),
+    ];
+  }
+
   /// واژه‌های تازه‌ی مناسب سطح کاربر.
   ///
   /// معیار انتخاب: نزدیک‌ترین دشواری به سطح کاربر، پرتکرارتر، و هم‌راستا با

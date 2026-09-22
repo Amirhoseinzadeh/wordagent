@@ -167,6 +167,15 @@ class AppController {
         dayKey: todayKey,
       );
 
+  /// واژه‌های پیشنهادی هم‌راستا با هدف یادگیری کاربر.
+  List<Word> get goalWords => _sessionBuilder.goalWords(
+        words: allWords,
+        states: states,
+        profile: profile,
+        limit: 6,
+        allowPremium: hasPremium,
+      );
+
   Word? get wordOfTheDay => _sessionBuilder.wordOfTheDay(
         words: allWords,
         states: states,
