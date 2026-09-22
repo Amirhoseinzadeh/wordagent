@@ -456,7 +456,7 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
                           children: <Widget>[
                             for (final topic in word.topics)
                               TagChip(
-                                label: _topicLabel(topic),
+                                label: TopicLabels.fa(topic),
                                 color: palette.info,
                                 dense: true,
                               ),
@@ -498,28 +498,6 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
         );
       },
     );
-  }
-
-  static String _topicLabel(String topic) {
-    const map = <String, String>{
-      'daily': 'زندگی روزمره',
-      'travel': 'سفر',
-      'food': 'خوردنی‌ها',
-      'business': 'کسب‌وکار',
-      'academic': 'آکادمیک',
-      'science': 'علم',
-      'media': 'فیلم و سریال',
-      'feelings': 'احساسات',
-      'health': 'سلامت',
-      'technology': 'فناوری',
-      'sport': 'ورزش',
-      'nature': 'طبیعت',
-      'education': 'آموزش',
-      'money': 'مالی',
-      'family': 'خانواده',
-      'work': 'کار',
-    };
-    return map[topic] ?? topic;
   }
 }
 

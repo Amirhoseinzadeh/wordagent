@@ -19,7 +19,22 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { Parser, Language } = require('web-tree-sitter');
+
+// دو بسته‌ی Node لازم است. اگر نصب نباشند، پیام راهنما می‌دهیم نه stack trace.
+let Parser;
+let Language;
+let wasmPath;
+try {
+  ({ Parser, Language } = require('web-tree-sitter'));
+  wasmPath = require.resolve('tree-sitter-wasms/out/tree-sitter-dart.wasm');
+} catch (error) {
+  console.error('این ابزار به دو بسته‌ی Node نیاز دارد:');
+  console.error('  npm install --no-save web-tree-sitter@0.25.6 tree-sitter-wasms');
+  console.error('(نسخه‌ی ۰٫۲۷ web-tree-sitter با این فایل wasm سازگار نیست.)');
+  process.exit(2);
+}
+
+// در صورت اجرا با NODE_PATH، مسیر ماژول‌ها از متغیر محیطی هم خوانده می‌شود.
 
 const ROOT = path.resolve(process.argv[2] ?? path.join(import.meta.dirname, '..', '..'));
 const SKIP_DIRS = new Set(['.git', 'build', 'node_modules', '.dart_tool', 'assets']);
@@ -37,9 +52,7 @@ function walk(dir, out = []) {
 }
 
 await Parser.init();
-const wasm = require.resolve('tree-sitter-wasms/out/tree-sitter-dart.wasm');
-await Parser.init();
-const language = await Language.load(wasm);
+const language = await Language.load(wasmPath);
 const parser = new Parser();
 parser.setLanguage(language);
 

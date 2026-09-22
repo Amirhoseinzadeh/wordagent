@@ -20,5 +20,29 @@
     "phr": 4,
     "conj": 2,
     "prep": 1
-  }
+  },
+  "topicTags": {
+    "academic": 167,
+    "work": 162,
+    "society": 138,
+    "business": 128,
+    "feelings": 121,
+    "thought": 121,
+    "daily": 112,
+    "science": 108,
+    "media": 89,
+    "study": 80,
+    "health": 62,
+    "people": 57,
+    "time": 42,
+    "tech": 39,
+    "money": 37,
+    "travel": 31,
+    "sports": 25,
+    "nature": 18,
+    "food": 13,
+    "home": 9,
+    "body": 8
+  },
+  "withForms": 748
 }

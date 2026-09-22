@@ -44,6 +44,268 @@ POS_CODES = {
     "phr", "phrv", "idiom",
 }
 
+# --------------------------------------------------------- شکل‌های واژه
+
+#: شکل‌های بی‌قاعده‌ی فعل: term → (گذشته، اسم مفعولی)
+IRREGULAR_VERBS: dict[str, tuple[str, str]] = {
+    "arise": ("arose", "arisen"),
+    "buy": ("bought", "bought"),
+    "choose": ("chose", "chosen"),
+    "come": ("came", "come"),
+    "drink": ("drank", "drunk"),
+    "drive": ("drove", "driven"),
+    "eat": ("ate", "eaten"),
+    "find": ("found", "found"),
+    "forbid": ("forbade", "forbidden"),
+    "forget": ("forgot", "forgotten"),
+    "forgive": ("forgave", "forgiven"),
+    "get": ("got", "got"),
+    "give": ("gave", "given"),
+    "go": ("went", "gone"),
+    "know": ("knew", "known"),
+    "lend": ("lent", "lent"),
+    "lose": ("lost", "lost"),
+    "make": ("made", "made"),
+    "meet": ("met", "met"),
+    "pay": ("paid", "paid"),
+    "read": ("read", "read"),
+    "ride": ("rode", "ridden"),
+    "run": ("ran", "run"),
+    "say": ("said", "said"),
+    "see": ("saw", "seen"),
+    "send": ("sent", "sent"),
+    "sleep": ("slept", "slept"),
+    "speak": ("spoke", "spoken"),
+    "spend": ("spent", "spent"),
+    "swim": ("swam", "swum"),
+    "take": ("took", "taken"),
+    "tell": ("told", "told"),
+    "think": ("thought", "thought"),
+    "understand": ("understood", "understood"),
+    "win": ("won", "won"),
+    "withstand": ("withstood", "withstood"),
+    "write": ("wrote", "written"),
+}
+
+#: فعل‌هایی که در انگلیسی آمریکایی حرف آخرشان دو برابر می‌شود.
+#: فعل‌های چندسیلابی که تکیه روی هجای آخر است و حرف آخرشان دو برابر می‌شود.
+DOUBLE_FINAL_VERBS = {
+    "commit", "control", "deter", "fit", "forbid", "forget", "occur", "permit",
+    "prefer", "stop", "transmit",
+}
+
+#: صفت‌هایی که شکل برتر/برترینشان دو برابر می‌شود.
+DOUBLE_FINAL_ADJS = {"big", "hot", "sad"}
+
+#: فقط همین صفت‌ها شکل برتر/برترین می‌گیرند (کوتاه و پرکاربرد).
+DEGREE_ADJS = {
+    "big", "busy", "cheap", "cold", "easy", "fast", "free", "friendly", "happy",
+    "hard", "healthy", "hot", "new", "old", "ready", "sad", "simple", "slow",
+    "small", "sure", "young",
+}
+
+#: صفت‌هایی که درجه‌پذیر نیستند (برتر/برترینشان بی‌معنی است).
+NON_GRADABLE = {
+    "adamant", "constant", "entire", "equivalent", "eventual", "extra",
+    "identical", "initial",
+    "impossible", "inevitable", "local", "mutual", "negligible", "obsolete",
+    "paramount", "permanent", "possible", "right", "same", "sole", "ultimate",
+    "unique", "wrong",
+}
+
+#: صفت‌های بی‌قاعده در حالت برتر/برترین.
+IRREGULAR_DEGREE: dict[str, tuple[str, str]] = {
+    "bad": ("worse", "worst"),
+    "good": ("better", "best"),
+    "ill": ("worse", "worst"),
+}
+
+#: جمع‌های بی‌قاعده.
+IRREGULAR_PLURALS: dict[str, str] = {
+    "child": "children",
+    "criterion": "criteria",
+    "hypothesis": "hypotheses",
+    "man": "men",
+    "phenomenon": "phenomena",
+    "woman": "women",
+}
+
+#: اسم‌های غیرقابل‌شمارش (جمع بستنشان بی‌معنی است).
+UNCOUNTABLE = {
+    "acumen", "altruism", "attention", "autonomy", "behavior", "candor",
+    "cohesion", "confidence", "consensus", "courage", "demeanor", "discretion",
+    "disdain", "education", "evidence", "food", "health", "impetus",
+    "integrity", "knowledge", "luggage", "magnitude", "momentum", "money",
+    "music", "myriad", "patience", "percent", "potential", "progress", "rain",
+    "snow", "staff", "stress", "sun", "talent", "water", "weather", "work",
+    # اسم‌هایی که جمع بستنشان گمراه‌کننده است:
+    "internet", "people", "series",
+}
+
+#: برچسب‌های مجاز موضوعی — همان واژه‌نامه‌ای که موتورها می‌فهمند.
+TOPIC_TAGS = {
+    "academic", "body", "business", "daily", "feelings", "food", "health",
+    "home", "media", "money", "nature", "people", "science", "society",
+    "sports", "study", "tech", "thought", "time", "travel", "work",
+}
+
+FORMS_POS = {"n", "v", "adj"}
+
+#: حروف صدادار انگلیسی در نوشتار (نام متفاوت از جدول IPA تا تداخل نشود).
+EN_VOWELS = "aeiou"
+#: پایانه‌هایی که سوم‌شخص مفرد «es» می‌گیرد (go → goes).
+VERB_ES_ENDINGS = ("s", "x", "z", "ch", "sh", "o")
+#: پایانه‌هایی که جمع «es» می‌گیرد (bus → buses؛ photo → photos).
+NOUN_ES_ENDINGS = ("s", "x", "z", "ch", "sh")
+
+
+def _double_final(term: str) -> str:
+    """بازگرداندن واژه با حرف آخر دوبرابر (stop → stopp)."""
+    return term + term[-1]
+
+
+def _is_consonant(letter: str) -> bool:
+    return letter not in EN_VOWELS
+
+
+def _syllables(term: str) -> int:
+    return len(re.findall(r"[aeiouy]+", term))
+
+
+def _is_vowel(letter: str) -> bool:
+    return letter in EN_VOWELS
+
+
+def _doubles(term: str) -> bool:
+    """آیا فعل در صرف، حرف آخرش دو برابر می‌شود؟ (stop → stopping)"""
+    if term in DOUBLE_FINAL_VERBS:
+        return True
+    if len(term) < 3 or term[-1] in "wxy":
+        return False
+    last, middle, first = term[-3], term[-2], term[-1]
+    if _is_consonant(last) and _is_vowel(middle) and _is_consonant(first):
+        # فقط فعل‌های تک‌سیلابی به‌طور خودکار دو برابر می‌شوند.
+        return _syllables(term) == 1
+    return False
+
+
+def _past_form(term: str) -> tuple[str, str]:
+    """شکل گذشته و اسم مفعولی یک فعل ساده."""
+    irregular = IRREGULAR_VERBS.get(term)
+    if irregular:
+        return irregular
+    if term.endswith("y") and len(term) > 2 and _is_consonant(term[-2]):
+        return term[:-1] + "ied", term[:-1] + "ied"
+    if term.endswith("e"):
+        return term + "d", term + "d"
+    if _doubles(term):
+        doubled = _double_final(term)
+        return doubled + "ed", doubled + "ed"
+    return term + "ed", term + "ed"
+
+
+def _ing_form(term: str) -> str:
+    if term.endswith("ie"):
+        return term[:-2] + "ying"
+    if term.endswith("e") and not term.endswith(("ee", "ye", "oe")):
+        return term[:-1] + "ing"
+    if _doubles(term):
+        return _double_final(term) + "ing"
+    return term + "ing"
+
+
+def _third_person(term: str) -> str:
+    if term.endswith("y") and len(term) > 2 and _is_consonant(term[-2]):
+        return term[:-1] + "ies"
+    if term.endswith(VERB_ES_ENDINGS):
+        return term + "es"
+    return term + "s"
+
+
+def _plural_form(term: str) -> str | None:
+    if term in UNCOUNTABLE or term in IRREGULAR_PLURALS:
+        return IRREGULAR_PLURALS.get(term)
+    if term.endswith("y") and len(term) > 2 and _is_consonant(term[-2]):
+        return term[:-1] + "ies"
+    if term.endswith(NOUN_ES_ENDINGS):
+        return term + "es"
+    return term + "s"
+
+
+def _degree_forms(term: str) -> tuple[str, str] | None:
+    irregular = IRREGULAR_DEGREE.get(term)
+    if irregular:
+        return irregular
+    if term in NON_GRADABLE:
+        return None
+    if term not in DEGREE_ADJS:
+        # صفت‌های بلندتر با more/most درجه می‌گیرند.
+        return f"more {term}", f"most {term}"
+    if term in DOUBLE_FINAL_ADJS:
+        doubled = _double_final(term)
+        return doubled + "er", doubled + "est"
+    if term.endswith("y"):
+        return term[:-1] + "ier", term[:-1] + "iest"
+    if term.endswith("e"):
+        return term + "r", term + "st"
+    return term + "er", term + "est"
+
+
+def forms_for(term: str, pos: str) -> list[dict]:
+    """شکل‌های صرفی واژه با برچسب فارسی (خالی برای واژه‌های نقشی)."""
+    forms: list[dict] = []
+    if pos == "v":
+        past, participle = _past_form(term)
+        candidates = [
+            ("گذشته", past),
+            ("اسم مفعول", participle),
+            ("حال استمراری", _ing_form(term)),
+            ("سوم‌شخص مفرد", _third_person(term)),
+        ]
+    elif pos == "n":
+        plural = _plural_form(term)
+        candidates = [("جمع", plural)] if plural else []
+    elif pos == "adj":
+        degree = _degree_forms(term)
+        candidates = [("برتر", degree[0]), ("برترین", degree[1])] if degree else []
+    else:
+        return forms
+
+    seen = {term.lower()}
+    for label, value in candidates:
+        if not value or value.lower() in seen:
+            continue
+        seen.add(value.lower())
+        forms.append({"label": label, "value": value})
+    return forms
+
+
+# ------------------------------------------------------------ برچسب موضوعی
+
+def load_topics() -> tuple[dict[str, list[str]], list[str]]:
+    """برچسب‌های موضوعی از `tools/content/topics.txt`."""
+    rows = read_lines(os.path.join(CONTENT_DIR, "topics.txt"))
+    mapping: dict[str, list[str]] = {}
+    problems: list[str] = []
+    for row in rows:
+        if len(row) < 2:
+            problems.append(f"topics.txt خط نامعتبر: {'||'.join(row)[:40]}")
+            continue
+        term = row[0].lower()
+        tags = split_multi(row[1])
+        if term in mapping:
+            problems.append(f"topics.txt واژه‌ی تکراری: {term}")
+            continue
+        unknown = [tag for tag in tags if tag not in TOPIC_TAGS]
+        if unknown:
+            problems.append(f"{term}: برچسب ناشناخته {unknown}")
+        if not tags:
+            problems.append(f"{term}: بدون برچسب")
+            continue
+        mapping[term] = [tag for tag in tags if tag in TOPIC_TAGS]
+    return mapping, problems
+
+
 # --------------------------------------------------------------- تلفظ (IPA)
 
 IRREGULAR_FORMS: dict[str, set[str]] = {
@@ -120,6 +382,15 @@ VOWELS = {"ɑ", "æ", "ʌ", "ə", "ɔ", "a", "aɪ", "aʊ", "e", "eɪ", "iː",
           "ɪ", "oʊ", "ɔɪ", "uː", "ʊ", "ɜːr", "ər", "ɜ"}
 
 
+#: تلفظ دستی واژه‌های چندبخشی که در cmudict نیستند.
+IPA_OVERRIDES: dict[str, str] = {
+    "free time": "/frˈiː tˈaɪm/",
+    "improve on": "/ɪmprˈuːv ɒn/",
+    "learn from": "/lˈɜːrn frəm/",
+    "remember to": "/rɪmˈembər tuː/",
+}
+
+
 def _load_cmudict():
     try:
         import cmudict  # type: ignore
@@ -160,10 +431,14 @@ def arpabet_to_ipa(phones: list[str]) -> str:
     return "".join(out)
 
 
-def ipa_for(term: str, cmu: dict) -> str | None:
+def ipa_for(term: str, cmu: dict, previous: dict | None = None) -> str | None:
+    override = IPA_OVERRIDES.get(term.lower())
+    if override:
+        return override
     entry = cmu.get(term.lower())
     if not entry:
-        return None
+        # اجرای بیلدر بدون cmudict: تلفظ پیشین حفظ می‌شود.
+        return (previous or {}).get(term.lower())
     # نخستین تلفظ در cmudict رایج‌ترین است.
     ipa = arpabet_to_ipa(entry[0])
     if not ipa:
@@ -258,9 +533,44 @@ def image_for(word_id: str) -> str | None:
     return None
 
 
-def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
+def load_previous() -> tuple[dict[str, str], dict[str, int]]:
+    """تلفظ و رتبه‌ی کاربرد از بسته‌ی فعلی.
+
+    وقتی cmudict/wordfreq نصب نیستند (مثلاً اجرای بیلدر روی ماشین بدون
+    اینترنت)، این دو مقدار از خروجی قبلی حفظ می‌شود تا بیلد، محتوا را
+    خراب نکند. با کتابخانه‌های نصب‌شده، مقادیر تازه محاسبه می‌شوند.
+    """
+    ipas: dict[str, str] = {}
+    ranks: dict[str, int] = {}
+    for level in LEVELS:
+        path = os.path.join(OUT_DIR, f"words_{level}.json")
+        if not os.path.exists(path):
+            continue
+        try:
+            with open(path, encoding="utf-8") as handle:
+                payload = json.load(handle, object_pairs_hook=OrderedDict)
+        except (ValueError, OSError):
+            continue
+        for item in payload.get("words", []):
+            term = str(item.get("term", "")).lower()
+            if item.get("ipa"):
+                ipas[term] = item["ipa"]
+            rank = item.get("rank")
+            if isinstance(rank, int) and rank > 0:
+                ranks[term] = rank
+    return ipas, ranks
+
+
+def build_words(
+    cmu: dict,
+    ranks: dict,
+    topics: dict[str, list[str]] | None = None,
+    previous_ipa: dict[str, str] | None = None,
+) -> tuple[list[dict], list[str]]:
     words: list[dict] = []
     warnings: list[str] = []
+    topics = topics or {}
+    tagged: set[str] = set()
     seen_ids: set[str] = set()
 
     for level in LEVELS:
@@ -281,7 +591,7 @@ def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
             if pos not in POS_CODES:
                 warnings.append(f"{term}: نقش دستوری ناشناخته «{pos}»")
             entry["level"] = level
-            ipa = ipa_for(term, cmu)
+            ipa = ipa_for(term, cmu, previous_ipa)
             if ipa:
                 entry["ipa"] = ipa
             entry["rank"] = ranks.get(term.lower(), 0)
@@ -309,14 +619,22 @@ def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
                 entry["note"] = row[12]
             if len(row) > 13 and row[13]:
                 entry["emoji"] = row[13]
-            if len(row) > 14 and row[14]:
-                entry["topics"] = split_multi(row[14])
+            topic_tags = topics.get(term.lower())
+            if topic_tags is None and len(row) > 14 and row[14]:
+                topic_tags = split_multi(row[14])
+            if topic_tags:
+                entry["topics"] = topic_tags
+                tagged.add(term.lower())
             if len(row) > 15 and row[15]:
                 entry["forms"] = parse_forms(row[15])
             if len(row) > 16 and row[16]:
                 entry["mnemonic"] = row[16]
             if len(row) > 17 and row[17] in ("1", "premium", "vip"):
                 entry["premium"] = True
+
+            generated_forms = forms_for(term, entry["pos"])
+            if generated_forms:
+                entry["forms"] = generated_forms
 
             image = image_for(entry["id"])
             if image:
@@ -326,6 +644,12 @@ def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
                 warnings.append(f"شناسه‌ی تکراری: {entry['id']}")
             seen_ids.add(entry["id"])
             words.append(entry)
+
+    untagged = [word["term"] for word in words if word["term"].lower() not in tagged]
+    if untagged:
+        warnings.append(
+            f"{len(untagged)} واژه بدون برچسب موضوعی: {'، '.join(untagged[:8])}"
+        )
     return words, warnings
 
 
@@ -389,8 +713,13 @@ def build_packs(words: list[dict]) -> list[dict]:
 def main() -> int:
     print("ساخت بسته‌ی محتوا…")
     cmu = _load_cmudict()
-    ranks = _load_frequency()
-    words, warnings = build_words(cmu, ranks)
+    frequency = _load_frequency()
+    previous_ipa, previous_ranks = load_previous()
+    topics, topic_problems = load_topics()
+    # رتبه‌ی کاربرد: عدد تازه، و اگر پیکره در دسترس نبود همان عدد قبلی.
+    ranks = dict(previous_ranks)
+    ranks.update(frequency)
+    words, warnings = build_words(cmu, ranks, topics, previous_ipa)
     media_count = attach_media(words)
     packs = build_packs(words)
 
@@ -423,16 +752,32 @@ def main() -> int:
     manifest["mediaLines"] = media_count
     manifest["packs"] = len(packs)
     manifest["byPartOfSpeech"] = dict(pos_counter.most_common())
+    topic_counter = Counter(
+        tag for word in words for tag in word.get("topics", [])
+    )
+    manifest["topicTags"] = dict(topic_counter.most_common())
+    manifest["withForms"] = sum(1 for word in words if word.get("forms"))
     with open(os.path.join(OUT_DIR, "manifest.json"), "w", encoding="utf-8") as handle:
         json.dump(manifest, handle, ensure_ascii=False, indent=2)
     print("  ✓ manifest.json")
 
+    problems = list(topic_problems)
     if warnings:
         print(f"\n{len(warnings)} هشدار:")
         for item in warnings[:40]:
             print("   -", item)
-    print(f"\nجمع: {len(words)} واژه، {media_count} دیالوگ سینمایی، {len(packs)} بسته")
-    return 0
+    if problems:
+        print(f"\n{len(problems)} ایراد در برچسب‌های موضوعی:")
+        for item in problems[:40]:
+            print("   -", item)
+
+    tagged = sum(1 for word in words if word.get("topics"))
+    forms = sum(1 for word in words if word.get("forms"))
+    print(
+        f"\nجمع: {len(words)} واژه، {media_count} دیالوگ سینمایی، {len(packs)} بسته،"
+        f" {tagged} واژه برچسب‌دار، {forms} واژه با شکل‌های صرفی"
+    )
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":

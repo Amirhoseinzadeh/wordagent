@@ -14,6 +14,7 @@ import '../../domain/engines/xp_engine.dart';
 import '../../domain/engines/weakness_engine.dart';
 import '../../domain/entities/progress.dart';
 import '../../domain/entities/study_session.dart';
+import '../../l10n/labels.dart';
 import '../../l10n/strings.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
@@ -415,6 +416,80 @@ class _StatGrid extends StatelessWidget {
   }
 }
 
+/// سه حوزه‌ی ضعیف‌تر (کمترین دقت) از میان حوزه‌هایی که داده‌ی کافی دارند.
+List<AreaScore> _weakest(List<AreaScore> source) => source
+    .where((area) => area.total >= 2)
+    .toList(growable: false)
+  ..sort((a, b) => a.accuracy.compareTo(b.accuracy));
+
+/// فهرست میله‌ای حوزه‌های نیازمند تمرین (نقش دستوری یا موضوع).
+class _AreaList extends StatelessWidget {
+  const _AreaList({required this.title, required this.areas, this.labelOf});
+
+  final String title;
+  final List<AreaScore> areas;
+  final String Function(String label)? labelOf;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = AppPalette.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: palette.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 6),
+        for (final area in areas)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        labelOf?.call(area.label) ?? area.label,
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(color: palette.textPrimary),
+                      ),
+                    ),
+                    Text(
+                      '${FaFormat.percent(area.accuracy * 100)} '
+                      '(${FaFormat.digits(area.correct)}/${FaFormat.digits(area.total)})',
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: palette.textTertiary),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                AppProgressBar(
+                  progress: area.accuracy,
+                  height: 6,
+                  gradient: LinearGradient(
+                    colors: <Color>[
+                      area.accuracy < 0.6
+                          ? palette.danger
+                          : area.accuracy < 0.8
+                              ? palette.warning
+                              : palette.success,
+                      area.accuracy < 0.6 ? palette.warning : palette.success,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class _WeaknessCard extends StatelessWidget {
   const _WeaknessCard({required this.report, required this.plan});
 
@@ -424,10 +499,8 @@ class _WeaknessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
-    final areas = report.byPartOfSpeech
-        .where((area) => area.total >= 2)
-        .toList(growable: false)
-      ..sort((a, b) => a.accuracy.compareTo(b.accuracy));
+    final areas = _weakest(report.byPartOfSpeech);
+    final topics = _weakest(report.byTopic);
 
     return AppCard(
       child: Column(
@@ -479,60 +552,18 @@ class _WeaknessCard extends StatelessWidget {
             ),
             if (areas.isNotEmpty) ...<Widget>[
               const SizedBox(height: AppSpacing.sm),
-              Text(
-                'حوزه‌های نیازمند تمرین',
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: palette.textSecondary,
-                    ),
+              _AreaList(
+                title: 'حوزه‌های نیازمند تمرین',
+                areas: areas.take(3).toList(growable: false),
               ),
-              const SizedBox(height: 6),
-              for (final area in areas.take(3))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              area.label,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(color: palette.textPrimary),
-                            ),
-                          ),
-                          Text(
-                            '${FaFormat.percent(area.accuracy * 100)} '
-                            '(${FaFormat.digits(area.correct)}/${FaFormat.digits(area.total)})',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(color: palette.textTertiary),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      AppProgressBar(
-                        progress: area.accuracy,
-                        height: 6,
-                        gradient: LinearGradient(
-                          colors: <Color>[
-                            area.accuracy < 0.6
-                                ? palette.danger
-                                : area.accuracy < 0.8
-                                    ? palette.warning
-                                    : palette.success,
-                            area.accuracy < 0.6
-                                ? palette.warning
-                                : palette.success,
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            ],
+            if (topics.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.sm),
+              _AreaList(
+                title: 'موضوع‌های نیازمند تمرین',
+                areas: topics.take(3).toList(growable: false),
+                labelOf: TopicLabels.fa,
+              ),
             ],
             if (report.suggestions.isNotEmpty) ...<Widget>[
               const SizedBox(height: AppSpacing.xs),

@@ -17,6 +17,47 @@ import 'strings.dart';
 /// همه‌ی متن‌های کوتاه رابط کاربری در `strings.dart` و برچسب‌های
 /// وابسته به داده (سطح، نقش دستوری، وضعیت یادگیری…) این‌جا متمرکز شده‌اند
 /// تا هیچ متن انگلیسی/تکراری داخل ویجت‌ها پخش نشود.
+/// برچسب‌های فارسی موضوع‌های محتوا.
+///
+/// واژه‌نامه‌ی این برچسب‌ها با `tools/content/topics.txt` و بیلدر محتوا یکی
+/// است؛ اگر برچسب ناشناخته‌ای در داده بیاید، متن خام نمایش داده می‌شود و
+/// تست محتوا جلوی این حالت را می‌گیرد.
+abstract final class TopicLabels {
+  /// برچسب‌های مجاز محتوا (همان چیزی که بیلدر می‌پذیرد).
+  static const Map<String, String> titles = <String, String>{
+    'daily': 'زندگی روزمره',
+    'people': 'آدم‌ها و روابط',
+    'home': 'خانه و خانواده',
+    'food': 'خوراک و آشپزی',
+    'travel': 'سفر و مکان',
+    'work': 'کار و حرفه',
+    'business': 'کسب‌وکار',
+    'money': 'پول و خرید',
+    'study': 'یادگیری و آزمون',
+    'academic': 'آکادمیک',
+    'science': 'علم و پژوهش',
+    'tech': 'فناوری',
+    'media': 'فیلم و سرگرمی',
+    'sports': 'ورزش',
+    'health': 'سلامت',
+    'body': 'بدن',
+    'feelings': 'احساس و شخصیت',
+    'nature': 'طبیعت',
+    'society': 'جامعه و فرهنگ',
+    'time': 'زمان',
+    'thought': 'اندیشه و استدلال',
+  };
+
+  /// مجموعه‌ی برچسب‌های مجاز.
+  static Set<String> get tags => titles.keys.toSet();
+
+  /// آیا این برچسب‌ها در اپ شناخته‌شده‌اند؟
+  static bool isKnown(String tag) => titles.containsKey(tag);
+
+  /// عنوان فارسی یک برچسب موضوعی.
+  static String fa(String tag) => titles[tag] ?? tag;
+}
+
 extension WordStatusLabel on WordStatus {
   String get faLabel {
     switch (this) {

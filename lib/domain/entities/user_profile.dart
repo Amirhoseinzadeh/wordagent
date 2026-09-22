@@ -4,18 +4,41 @@ import 'cefr_level.dart';
 
 /// هدف کاربر از یادگیری زبان انگلیسی.
 enum LearningGoal {
-  travel(faTitle: 'سفر و مکالمه', emoji: '✈️', topics: <String>['travel', 'food', 'daily']),
-  work(faTitle: 'کار و مکاتبه', emoji: '💼', topics: <String>['business', 'email', 'daily']),
-  exam(faTitle: 'آزمون‌های بین‌المللی', emoji: '🎯', topics: <String>['academic', 'business']),
-  media(faTitle: 'فیلم، سریال و کتاب', emoji: '🍿', topics: <String>['media', 'daily', 'feelings']),
-  academic(faTitle: 'ادامه‌ی تحصیل', emoji: '🎓', topics: <String>['academic', 'science']);
+  travel(
+    faTitle: 'سفر و مکالمه',
+    emoji: '✈️',
+    topics: <String>['travel', 'food', 'home', 'nature', 'money', 'daily'],
+  ),
+  work(
+    faTitle: 'کار و مکاتبه',
+    emoji: '💼',
+    topics: <String>['work', 'business', 'money', 'tech', 'study', 'daily'],
+  ),
+  exam(
+    faTitle: 'آزمون‌های بین‌المللی',
+    emoji: '🎯',
+    topics: <String>['academic', 'study', 'science', 'society', 'thought', 'business'],
+  ),
+  media(
+    faTitle: 'فیلم، سریال و کتاب',
+    emoji: '🍿',
+    topics: <String>['media', 'feelings', 'sports', 'people', 'society', 'daily'],
+  ),
+  academic(
+    faTitle: 'ادامه‌ی تحصیل',
+    emoji: '🎓',
+    topics: <String>['academic', 'science', 'study', 'tech', 'society', 'thought'],
+  );
 
   const LearningGoal({required this.faTitle, required this.emoji, required this.topics});
 
   final String faTitle;
   final String emoji;
 
-  /// موضوع‌هایی که با این هدف هم‌خوان‌اند (برای پیشنهاد بسته‌ی محتوا).
+  /// موضوع‌هایی که با این هدف هم‌خوان‌اند.
+  ///
+  /// این واژه‌ها باید از برچسب‌های `TopicLabels` باشند تا هم‌راستایی هدف
+  /// کاربر با محتوا (پیشنهاد واژه‌ی تازه و تحلیل ضعف موضوعی) واقعاً کار کند.
   final List<String> topics;
 }
 
