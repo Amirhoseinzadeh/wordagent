@@ -175,7 +175,7 @@ class _LearnScreenState extends State<LearnScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         final shouldExit = await _confirmExit();
-        if (shouldExit && mounted) {
+        if (shouldExit && context.mounted) {
           Navigator.of(context).pop();
         }
       },
@@ -229,7 +229,7 @@ class _LearnScreenState extends State<LearnScreen> {
                   onGrade: _grade,
                   onClose: () async {
                     final shouldExit = await _confirmExit();
-                    if (shouldExit && mounted) Navigator.of(context).pop();
+                    if (shouldExit && context.mounted) Navigator.of(context).pop();
                   },
                   onOpenDetail: () => Navigator.of(context).push(
                     AppRouter.build<void>(

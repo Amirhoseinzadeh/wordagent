@@ -200,5 +200,5 @@ extension AppThemeModeLabel on AppThemeMode {
 }
 
 extension WordLevelLabel on CefrLevel {
-  String get shortFa => '${code} • $faTitle';
+  String get shortFa => '$code • $faTitle';
 }

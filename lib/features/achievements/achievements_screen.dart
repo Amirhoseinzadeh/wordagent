@@ -12,6 +12,7 @@ import '../../domain/entities/achievement.dart';
 import '../../l10n/labels.dart';
 import '../../l10n/strings.dart';
 import '../../widgets/animations.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/badges.dart';

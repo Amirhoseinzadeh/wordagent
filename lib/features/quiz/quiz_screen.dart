@@ -311,7 +311,7 @@ class _QuizScreenState extends State<QuizScreen> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         final shouldExit = await _confirmExit();
-        if (shouldExit && mounted) Navigator.of(context).pop();
+        if (shouldExit && context.mounted) Navigator.of(context).pop();
       },
       child: Scaffold(
         backgroundColor: palette.background,
@@ -340,7 +340,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       combo: _combo,
                       onClose: () async {
                         final shouldExit = await _confirmExit();
-                        if (shouldExit && mounted) Navigator.of(context).pop();
+                        if (shouldExit && context.mounted) Navigator.of(context).pop();
                       },
                     ),
                     Expanded(

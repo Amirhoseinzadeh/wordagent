@@ -7,13 +7,11 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
 import '../../domain/entities/cefr_level.dart';
-import '../../domain/entities/settings.dart';
 import '../../domain/entities/user_profile.dart';
 import '../../l10n/strings.dart';
 import '../../widgets/animations.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
-import '../../widgets/badges.dart';
 import '../placement/placement_screen.dart';
 
 /// آنبوردینگ کوتاه و هدفمند: نام، هدف، سطح و هدف روزانه.

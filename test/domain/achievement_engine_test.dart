@@ -9,7 +9,7 @@ import '../helpers/fixtures.dart';
 void main() {
   const engine = AchievementEngine();
 
-  int _targetOf(String id) => AchievementCatalog.all
+  int targetOf(String id) => AchievementCatalog.all
       .firstWhere((achievement) => achievement.id == id)
       .target;
 
@@ -144,7 +144,7 @@ void main() {
       expect(xpEntry.current, 30);
       expect(xpEntry.unlockedAt, isNull);
       expect(xpEntry.isUnlocked, isFalse);
-      expect(xpEntry.current, lessThan(_targetOf('xp_1000')));
+      expect(xpEntry.current, lessThan(targetOf('xp_1000')));
     });
 
     test('clearNewFlags پرچم تازگی را پاک می‌کند', () {
@@ -175,7 +175,7 @@ void main() {
       );
       expect(update.progress.length, AchievementCatalog.all.length);
       for (final item in update.progress) {
-        final target = _targetOf(item.id);
+        final target = targetOf(item.id);
         expect(target, greaterThan(0));
         expect(item.current / target, inInclusiveRange(0, 1));
       }

@@ -92,10 +92,10 @@ class WordAgentApp extends StatelessWidget {
       case AppRoutes.splash:
         return AppRouter.instant((_) => const SplashScreen());
       case AppRoutes.onboarding:
-        return AppRouter.build((_) => const OnboardingScreen());
+        return AppRouter.build(builder: (_) => const OnboardingScreen());
       case AppRoutes.placement:
         final args = readArgs<PlacementArgs>(settings) ?? const PlacementArgs();
-        return AppRouter.build((_) => PlacementScreen(args: args));
+        return AppRouter.build(builder: (_) => PlacementScreen(args: args));
       case AppRoutes.shell:
         return AppRouter.instant(
           (_) => HomeShell(initialIndex: readArgs<int>(settings) ?? 0),
@@ -103,37 +103,37 @@ class WordAgentApp extends StatelessWidget {
       case AppRoutes.learn:
         final args = readArgs<LearnArgs>(settings);
         if (args == null) return null;
-        return AppRouter.build((_) => LearnScreen(args: args));
+        return AppRouter.build(builder: (_) => LearnScreen(args: args));
       case AppRoutes.quiz:
         final args = readArgs<QuizArgs>(settings);
         if (args == null) return null;
-        return AppRouter.build((_) => QuizScreen(args: args));
+        return AppRouter.build(builder: (_) => QuizScreen(args: args));
       case AppRoutes.wordDetail:
         final args = readArgs<WordDetailArgs>(settings);
         if (args == null) return null;
-        return AppRouter.build((_) => WordDetailScreen(args: args));
+        return AppRouter.build(builder: (_) => WordDetailScreen(args: args));
       case AppRoutes.wordList:
         final args = readArgs<WordListArgs>(settings) ??
             const WordListArgs(title: S.allWords);
-        return AppRouter.build((_) => WordListScreen(args: args));
+        return AppRouter.build(builder: (_) => WordListScreen(args: args));
       case AppRoutes.pack:
         final args = readArgs<PackArgs>(settings);
         if (args == null) return null;
-        return AppRouter.build((_) => PackDetailScreen(args: args));
+        return AppRouter.build(builder: (_) => PackDetailScreen(args: args));
       case AppRoutes.achievements:
-        return AppRouter.build((_) => const AchievementsScreen());
+        return AppRouter.build(builder: (_) => const AchievementsScreen());
       case AppRoutes.chat:
-        return AppRouter.build((_) => const ChatScreen());
+        return AppRouter.build(builder: (_) => const ChatScreen());
       case AppRoutes.paywall:
-        return AppRouter.build((_) => const PaywallScreen());
+        return AppRouter.build(builder: (_) => const PaywallScreen());
       case AppRoutes.settings:
-        return AppRouter.build((_) => const SettingsScreen());
+        return AppRouter.build(builder: (_) => const SettingsScreen());
       case AppRoutes.challenge:
         final plan = readArgs<SessionPlan>(settings);
         if (plan == null) return null;
-        return AppRouter.build((_) => ChallengeScreen(plan: plan));
+        return AppRouter.build(builder: (_) => ChallengeScreen(plan: plan));
       default:
-        return AppRouter.build((_) => const _NotFoundScreen());
+        return AppRouter.build(builder: (_) => const _NotFoundScreen());
     }
   }
 }

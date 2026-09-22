@@ -318,7 +318,7 @@ class AppController {
       attempts: attempts,
       startedAt: startedAt,
       isChallenge: isChallenge,
-      extraBonusXp: bonusXp,
+      bonusXp: bonusXp,
     );
   }
 

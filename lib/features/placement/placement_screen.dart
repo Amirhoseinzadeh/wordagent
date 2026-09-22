@@ -7,6 +7,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
 import '../../domain/engines/level_engine.dart';
+import '../../domain/engines/quiz_engine.dart';
 import '../../domain/engines/xp_engine.dart';
 import '../../domain/entities/cefr_level.dart';
 import '../../domain/entities/quiz_question.dart';
@@ -50,7 +51,6 @@ class _PlacementScreenState extends State<PlacementScreen> {
   final List<String> _premiumHits = <String>[];
 
   int _answered = 0;
-  int _correct = 0;
   int _xp = 0;
   String? _selected;
   bool _revealed = false;
@@ -106,7 +106,6 @@ class _PlacementScreenState extends State<PlacementScreen> {
 
     _answered += 1;
     if (isCorrect) {
-      _correct += 1;
       container.haptics.success();
     } else {
       container.haptics.light();
@@ -419,7 +418,6 @@ class _PlacementScreenState extends State<PlacementScreen> {
             _attempts.clear();
             _premiumHits.clear();
             _answered = 0;
-            _correct = 0;
             _xp = 0;
             _selected = null;
             _revealed = false;

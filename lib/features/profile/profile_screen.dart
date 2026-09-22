@@ -8,6 +8,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
 import '../../core/utils/jalali_date.dart';
+import '../../domain/engines/xp_engine.dart';
 import '../../domain/entities/progress.dart';
 import '../../domain/entities/subscription.dart';
 import '../../domain/entities/user_profile.dart';

@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../core/theme/app_dimens.dart';
 
 /// کارت دوطرفه با چرخش سه‌بعدی (فلش‌کارت).
 class FlipCard extends StatefulWidget {

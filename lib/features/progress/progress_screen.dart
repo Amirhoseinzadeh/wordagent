@@ -18,7 +18,6 @@ import '../../l10n/strings.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/badges.dart';
 import '../../widgets/progress_views.dart';
 import '../../widgets/states.dart';
 import '../achievements/achievements_screen.dart';
@@ -565,7 +564,7 @@ class _WeaknessCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             AppButton(
               label: S.startWeakReview,
-              icon: Icons.target_rounded,
+              icon: Icons.bolt_rounded,
               variant: AppButtonVariant.secondary,
               onPressed: () => _startWeak(context),
             ),

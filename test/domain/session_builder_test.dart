@@ -21,7 +21,7 @@ void main() {
   );
 
   Map<String, ReviewState> statesWith(
-    Map<String, ReviewState> Function(int index) build,
+    ReviewState Function(int index) build,
   ) =>
       <String, ReviewState>{
         for (var index = 0; index < words.length; index++)

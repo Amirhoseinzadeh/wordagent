@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../core/di/app_container.dart';
-import '../../core/di/app_controller.dart';
 import '../../core/routing/app_router.dart';
 import '../../core/state/value_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
-import '../../domain/engines/session_builder.dart';
 import '../../domain/engines/weakness_engine.dart';
-import '../../domain/entities/review_state.dart';
 import '../../l10n/strings.dart';
 import '../../widgets/animations.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/badges.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/states.dart';
 import '../../widgets/word_tile.dart';
 import '../challenge/challenge_screen.dart';
@@ -31,7 +28,6 @@ class LearnHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final container = AppScope.of(context);
     final controller = container.controller;
-    final palette = AppPalette.of(context);
 
     return Watch(
       listenables: <Listenable>[

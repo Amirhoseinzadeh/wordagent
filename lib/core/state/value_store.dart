@@ -112,7 +112,7 @@ class AsyncValue<T> {
 
 /// Store اختصاص‌یافته به عملیات‌های ناهمگام.
 class AsyncStore<T> extends ValueStore<AsyncValue<T>> {
-  AsyncStore({super.debugLabel}) : super(const AsyncValue<T>.loading());
+  AsyncStore({super.debugLabel}) : super(AsyncValue<T>.loading());
 
   Future<T?> run(Future<T> Function() task, {bool keepPreviousData = true}) async {
     value = keepPreviousData && value.hasData ? value.toLoading() : AsyncValue<T>.loading();

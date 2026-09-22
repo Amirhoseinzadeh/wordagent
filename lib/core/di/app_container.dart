@@ -8,7 +8,6 @@ import '../../data/repositories/subscription_repository_impl.dart';
 import '../../data/repositories/word_repository_impl.dart';
 import '../../data/sources/content_source.dart';
 import '../../domain/entities/pack.dart';
-import '../../domain/entities/subscription.dart';
 import '../../domain/entities/word.dart';
 import '../../domain/repositories/ai_repository.dart';
 import '../../domain/repositories/progress_repository.dart';

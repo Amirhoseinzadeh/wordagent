@@ -11,7 +11,6 @@ import '../../domain/engines/ai_tutor_engine.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/entities/word.dart';
 import '../../l10n/strings.dart';
-import '../../widgets/animations.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
@@ -120,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ? null
                   : () async {
                       await container.controller.clearChat();
-                      if (!mounted) return;
+                      if (!context.mounted) return;
                       showToast(context, 'گفت‌وگو پاک شد.');
                     },
             ),

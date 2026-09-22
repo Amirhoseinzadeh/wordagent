@@ -81,6 +81,9 @@ class ReviewState {
 
   bool get isNew => totalReviews == 0;
 
+  /// آیا واژه وارد چرخه‌ی یادگیری شده است؟
+  bool get isActive => totalReviews > 0 || firstSeenAt != null;
+
   double get accuracy => totalReviews == 0 ? 0 : correctReviews / totalReviews;
 
   /// وضعیت مشتق‌شده از داده‌های SRS.

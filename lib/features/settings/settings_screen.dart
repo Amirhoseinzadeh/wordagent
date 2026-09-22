@@ -14,9 +14,7 @@ import '../../l10n/strings.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/badges.dart';
 import '../../widgets/states.dart';
-import '../onboarding/onboarding_screen.dart';
 import '../paywall/paywall_screen.dart';
 
 /// تنظیمات: ظاهر، اهداف یادگیری، صدا، محتوا و داده‌ها.

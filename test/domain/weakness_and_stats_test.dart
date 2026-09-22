@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wordagent/domain/entities/cefr_level.dart';
 import 'package:wordagent/domain/entities/part_of_speech.dart';
 import 'package:wordagent/domain/entities/progress.dart';
 import 'package:wordagent/domain/entities/quiz_question.dart';

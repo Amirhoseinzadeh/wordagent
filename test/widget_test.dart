@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +11,6 @@ import 'package:wordagent/core/services/audio_service.dart';
 import 'package:wordagent/core/storage/local_store_memory.dart';
 import 'package:wordagent/core/theme/app_theme.dart';
 import 'package:wordagent/domain/entities/cefr_level.dart';
-import 'package:wordagent/domain/entities/word.dart';
-import 'package:wordagent/l10n/labels.dart';
 import 'package:wordagent/widgets/app_button.dart';
 import 'package:wordagent/widgets/badges.dart';
 import 'package:wordagent/widgets/word_tile.dart';

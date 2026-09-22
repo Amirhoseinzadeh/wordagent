@@ -8,6 +8,7 @@ import '../core/utils/fa_format.dart';
 import '../domain/entities/review_state.dart';
 import '../domain/entities/word.dart';
 import 'animations.dart';
+import 'app_button.dart';
 import 'badges.dart';
 
 /// تصویر یک واژه: تصویر محتوا، تصویر شبکه‌ای، یا جای‌گزین رنگی با ایموجی.

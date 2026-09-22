@@ -194,7 +194,10 @@ void main() {
 
     test('سطح هرگز از سقف بازی فراتر نمی‌رود', () {
       final top = XpEngine.levelFor(10000000);
-      expect(top.index, lessThan(XpEngine.maxLevel));
+      expect(top.index, lessThanOrEqualTo(XpEngine.maxLevel));
+      expect(top.index, XpEngine.maxLevel,
+          reason: 'با امتیاز بسیار زیاد باید دقیقاً روی سقف بایستد');
+      expect(XpEngine.levelFor(XpEngine.xpForLevel(5)).index, lessThanOrEqualTo(5));
     });
 
     test('xpForLevel صعودی است و سطح اول از صفر شروع می‌شود', () {

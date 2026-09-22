@@ -54,20 +54,17 @@ jobs:
         id: checks
         run: |
           set +e
-          : > status.env
-          echo "ANALYZE_EXIT=0" >> status.env
-          echo "TEST_EXIT=0" >> status.env
-          echo "BUILD_EXIT=0" >> status.env
-
           flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1
-          echo "ANALYZE_EXIT=$?" >> status.env
-
+          ANALYZE_EXIT=$?
           flutter test --reporter expanded > test.txt 2>&1
-          echo "TEST_EXIT=$?" >> status.env
-
+          TEST_EXIT=$?
           flutter build web --release > build.txt 2>&1
-          echo "BUILD_EXIT=$?" >> status.env
-
+          BUILD_EXIT=$?
+          {
+            echo "ANALYZE_EXIT=$ANALYZE_EXIT"
+            echo "TEST_EXIT=$TEST_EXIT"
+            echo "BUILD_EXIT=$BUILD_EXIT"
+          } > status.env
           cat status.env
           exit 0
 
@@ -84,28 +81,36 @@ jobs:
             cat status.env
             echo '```'
             echo
-            echo "### flutter analyze"
+            echo "### تست‌های شکست‌خورده (فهرست)"
             echo '```'
-            head -c 24000 analyze.txt
+            grep -A200 '^Failing tests:' test.txt | head -c 2500
+            echo '```'
+            echo
+            echo "### جزئیات خطاهای تست"
+            echo '```'
+            grep -B1 -A14 '\[E\]' test.txt | head -c 22000
+            echo '```'
+            echo
+            echo "### flutter analyze (فقط ایرادها)"
+            echo '```'
+            grep -E '(error|warning|info) •' analyze.txt | head -c 14000
             echo
             echo '... [tail] ...'
-            tail -c 6000 analyze.txt
+            tail -c 1200 analyze.txt
             echo '```'
             echo
-            echo "### flutter test"
+            echo "### flutter test (انتهای خروجی)"
             echo '```'
-            head -c 8000 test.txt
-            echo
-            echo '... [tail] ...'
-            tail -c 24000 test.txt
+            tail -c 6000 test.txt
             echo '```'
             echo
             echo "### flutter build web"
             echo '```'
-            tail -c 6000 build.txt
+            tail -c 3000 build.txt
             echo '```'
-          } > report.md
-          wc -c report.md
+          } > report.raw.md
+          head -c 60000 report.raw.md > report.md
+          wc -c report.raw.md report.md
           gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
             -F body=@report.md && echo 'comment posted' || echo 'comment failed'
 

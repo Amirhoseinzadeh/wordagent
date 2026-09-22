@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../core/di/app_container.dart';
 import '../../core/routing/app_router.dart';
@@ -10,7 +9,6 @@ import '../../core/theme/app_palette.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/fa_format.dart';
 import '../../domain/entities/review_state.dart';
-import '../../domain/entities/study_session.dart';
 import '../../domain/entities/word.dart';
 import '../../l10n/labels.dart';
 import '../../l10n/strings.dart';
@@ -23,7 +21,6 @@ import '../../widgets/progress_views.dart';
 import '../../widgets/states.dart';
 import '../../widgets/word_tile.dart';
 import '../chat/chat_screen.dart';
-import '../paywall/paywall_screen.dart';
 import '../quiz/quiz_screen.dart';
 
 /// صفحه‌ی جزئیات واژه: همه‌ی محتوای آموزشی یک واژه در یک نگاه.

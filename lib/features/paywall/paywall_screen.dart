@@ -453,7 +453,7 @@ class _PaywallPlanCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '${plan.priceLabel} • ${_saveLabel}',
+                    '${plan.priceLabel} • $_saveLabel',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: palette.textSecondary,
                         ),

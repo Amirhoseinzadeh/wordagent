@@ -15,6 +15,7 @@ import '../../widgets/ad_slot.dart';
 import '../../widgets/animations.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/app_scaffold.dart';
 import '../../widgets/badges.dart';
 import '../../widgets/progress_views.dart';
 import '../../widgets/states.dart';

@@ -43,7 +43,7 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
-    var content = Padding(padding: padding, child: body);
+    Widget content = Padding(padding: padding, child: body);
     if (onRefresh != null) {
       content = RefreshIndicator(
         onRefresh: onRefresh!,
