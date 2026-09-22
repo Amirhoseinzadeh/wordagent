@@ -10,6 +10,7 @@
   * words_a1.json … words_c2.json
   * packs.json
   * manifest.json
+  * ارجاع تصویر هر واژه، اگر فایلی با نام شناسه‌ی آن در assets/images باشد
 
 کارهایی که خودکار انجام می‌شود:
   * تبدیل تلفظ ARPAbet فرهنگ لغت cmudict به الفبای آوانگاری IPA
@@ -32,6 +33,10 @@ from collections import Counter, OrderedDict
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT_DIR = os.path.join(ROOT, "tools", "content")
 OUT_DIR = os.path.join(ROOT, "assets", "content")
+IMAGE_DIR = os.path.join(ROOT, "assets", "images")
+IMAGE_EXTS = (".webp", ".png", ".jpg", ".jpeg")
+MEBIBYTE = 1024 * 1024
+
 
 LEVELS = ["a1", "a2", "b1", "b2", "c1", "c2"]
 POS_CODES = {
@@ -235,6 +240,24 @@ def parse_forms(value: str) -> list[dict]:
     return forms
 
 
+def image_for(word_id: str) -> str | None:
+    """ارجاع تصویر واژه: فایل هم‌نام شناسه در assets/images.
+
+    تصویر بخشی از بسته‌ی محتوای متنی نیست؛ هر وقت فایل تصویری با نام شناسه
+    (مثلاً `a1_001.webp`) در پوشه‌ی تصاویر گذاشته شود، با اجرای بیلدر به
+    JSON همان واژه اضافه می‌شود. نبودن تصویر خطا نیست.
+    """
+    for ext in IMAGE_EXTS:
+        rel = f"assets/images/{word_id}{ext}"
+        path = os.path.join(ROOT, rel)
+        if os.path.exists(path):
+            size = os.path.getsize(path)
+            if size > 2 * MEBIBYTE:
+                print(f"  هشدار: تصویر {rel} بزرگ است ({size // 1024} کیلوبایت)")
+            return rel
+    return None
+
+
 def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
     words: list[dict] = []
     warnings: list[str] = []
@@ -294,6 +317,10 @@ def build_words(cmu: dict, ranks: dict) -> tuple[list[dict], list[str]]:
                 entry["mnemonic"] = row[16]
             if len(row) > 17 and row[17] in ("1", "premium", "vip"):
                 entry["premium"] = True
+
+            image = image_for(entry["id"])
+            if image:
+                entry["image"] = image
 
             if entry["id"] in seen_ids:
                 warnings.append(f"شناسه‌ی تکراری: {entry['id']}")

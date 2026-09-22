@@ -181,6 +181,8 @@ class S {
   static const meaningSection = 'معنی';
   static const definitionSection = 'توضیح';
   static const pronunciationSection = 'تلفظ';
+  static const imageSection = 'تصویر واژه';
+  static const wordImageSoon = 'تصویر این واژه به‌زودی';
   static const examplesSection = 'مثال‌ها';
   static const conversationSection = 'در مکالمه';
   static const mediaSection = 'در فیلم و سریال';

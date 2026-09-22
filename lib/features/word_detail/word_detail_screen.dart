@@ -19,6 +19,7 @@ import '../../widgets/app_scaffold.dart';
 import '../../widgets/badges.dart';
 import '../../widgets/progress_views.dart';
 import '../../widgets/states.dart';
+import '../../widgets/word_image.dart';
 import '../../widgets/word_tile.dart';
 import '../chat/chat_screen.dart';
 import '../quiz/quiz_screen.dart';
@@ -147,6 +148,25 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
                 speaking: _speaking,
                 onSpeak: _speak,
                 locked: locked,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                  AppSpacing.md,
+                  0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SectionHeader(
+                      title: S.imageSection,
+                      icon: Icons.image_outlined,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    WordImageCard(word: word),
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),

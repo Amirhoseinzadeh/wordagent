@@ -11,8 +11,10 @@ import 'package:wordagent/core/services/audio_service.dart';
 import 'package:wordagent/core/storage/local_store_memory.dart';
 import 'package:wordagent/core/theme/app_theme.dart';
 import 'package:wordagent/domain/entities/cefr_level.dart';
+import 'package:wordagent/l10n/strings.dart';
 import 'package:wordagent/widgets/app_button.dart';
 import 'package:wordagent/widgets/badges.dart';
+import 'package:wordagent/widgets/word_image.dart';
 import 'package:wordagent/widgets/word_tile.dart';
 
 import 'helpers/fixtures.dart';
@@ -140,6 +142,35 @@ void main() {
       await tester.pumpWidget(wrap(const PremiumBadge()));
       expect(find.byType(PremiumBadge), findsOneWidget);
       expect(find.byIcon(Icons.workspace_premium_rounded), findsOneWidget);
+    });
+  });
+
+  group('تصویر واژه', () {
+    testWidgets('بدون تصویر، کارت تزئینی با حرف نخست ساخته می‌شود', (tester) async {
+      final word = makeWord(id: 'a2_010', term: 'harvest');
+      await tester.pumpWidget(wrap(WordImageCard(word: word)));
+
+      expect(find.byType(WordImageCard), findsOneWidget);
+      expect(find.text('H'), findsOneWidget);
+      expect(find.text(S.wordImageSoon), findsOneWidget);
+    });
+
+    testWidgets('ارجاع خالی تصویر، کارت تزئینی را فعال می‌کند', (tester) async {
+      final word = makeWord(id: 'a2_011', term: 'orbit').copyWith(imageAsset: '   ');
+      await tester.pumpWidget(wrap(WordImageCard(word: word)));
+
+      expect(find.text('O'), findsOneWidget);
+      expect(find.text(S.wordImageSoon), findsOneWidget);
+    });
+
+    testWidgets('نبود هر دو ارجاع، حالت فشرده هم چیزی برای نمایش دارد', (tester) async {
+      final word = makeWord(id: 'a2_012', term: 'lane')
+          .copyWith(imageAsset: null, imageUrl: '  ');
+      await tester.pumpWidget(
+        wrap(WordImageCard(word: word, compact: true, height: 120)),
+      );
+
+      expect(find.text('L'), findsOneWidget);
     });
   });
 
