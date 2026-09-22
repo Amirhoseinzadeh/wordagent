@@ -157,6 +157,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
       attempts: _attempts,
       startedAt: _startedAt,
       sessionXp: _xp,
+      creditSessionXp: true,
     );
     if (!mounted) return;
     setState(() {
@@ -165,8 +166,10 @@ class _PlacementScreenState extends State<PlacementScreen> {
       _busy = false;
     });
     container.haptics.celebrate();
-    if (outcome.leveledUp) {
+    if (outcome.unlockedAchievements.isNotEmpty) {
       showToast(context, 'دستاورد تازه باز شد! 🎉');
+    } else if (outcome.leveledUp) {
+      showToast(context, 'به سطح «${outcome.level.title}» رسیدی ${outcome.level.emoji}');
     }
   }
 

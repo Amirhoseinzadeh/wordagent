@@ -449,7 +449,9 @@ class _MessageBubble extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 3, right: 36, left: 36),
             child: Text(
-              _timeLabel(message),
+              message.isFallback && !isUser
+                  ? '${S.chatFallbackNote} · ${_timeLabel(message)}'
+                  : _timeLabel(message),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: palette.textTertiary,
                     fontSize: 9,

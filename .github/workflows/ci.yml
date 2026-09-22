@@ -1,18 +1,36 @@
-name: CI
-
 # این گردش‌کار همان کاری را انجام می‌دهد که هنگام کار روی پروژه لازم است:
 # وابستگی‌ها، تحلیل ایستا، تست‌ها و یک بیلد واقعی وب (به‌عنوان کنترل نهایی
 # این‌که همه‌ی لایه‌ها روی یک پلتفرم واقعی کامپایل می‌شوند).
+#
+# خروجی هر مرحله در یک کامنت روی همان کامیت منتشر می‌شود تا نتیجه‌ی
+# analyze/test/build از هر محیطی قابل خواندن باشد.
+name: CI
+
 on:
   push:
-    branches: [main, 'arena/**', 'feature/**', 'fix/**']
+    branches:
+      - main
+      - 'arena/**'
+      - 'feature/**'
+      - 'fix/**'
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   analyze-and-test:
+    name: analyze-and-test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
     steps:
       - name: دریافت کد
         uses: actions/checkout@v4
@@ -29,11 +47,75 @@ jobs:
       - name: وابستگی‌ها
         run: flutter pub get
 
-      - name: تحلیل ایستا
-        run: flutter analyze
+      # هر سه مرحله اجرا می‌شوند تا در یک اجرا بیشترین بازخورد را بگیریم؛
+      # خروجی هر مرحله در فایل ذخیره می‌شود و در گام «گزارش» به یک کامنت
+      # روی کامیت تبدیل می‌شود (خواندن لاگ اکشن‌ها از این محیط ممکن نیست).
+      - name: تحلیل، تست و ساخت
+        id: checks
+        run: |
+          set +e
+          : > status.env
+          echo "ANALYZE_EXIT=0" >> status.env
+          echo "TEST_EXIT=0" >> status.env
+          echo "BUILD_EXIT=0" >> status.env
 
-      - name: تست‌ها
-        run: flutter test --reporter expanded
+          flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1
+          echo "ANALYZE_EXIT=$?" >> status.env
 
-      - name: ساخت نسخه‌ی وب (کنترل نهایی کامپایل)
-        run: flutter build web --release
+          flutter test --reporter expanded > test.txt 2>&1
+          echo "TEST_EXIT=$?" >> status.env
+
+          flutter build web --release > build.txt 2>&1
+          echo "BUILD_EXIT=$?" >> status.env
+
+          cat status.env
+          exit 0
+
+      - name: گزارش
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          {
+            echo "## CI report — \`${GITHUB_SHA:0:7}\`"
+            echo
+            echo '```'
+            cat status.env
+            echo '```'
+            echo
+            echo "### flutter analyze"
+            echo '```'
+            head -c 24000 analyze.txt
+            echo
+            echo '... [tail] ...'
+            tail -c 6000 analyze.txt
+            echo '```'
+            echo
+            echo "### flutter test"
+            echo '```'
+            head -c 8000 test.txt
+            echo
+            echo '... [tail] ...'
+            tail -c 24000 test.txt
+            echo '```'
+            echo
+            echo "### flutter build web"
+            echo '```'
+            tail -c 6000 build.txt
+            echo '```'
+          } > report.md
+          wc -c report.md
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            -F body=@report.md && echo 'comment posted' || echo 'comment failed'
+
+      - name: نتیجه‌ی نهایی
+        run: |
+          set +e
+          cat status.env
+          source status.env
+          if [ "$ANALYZE_EXIT" != "0" ] || [ "$TEST_EXIT" != "0" ] || [ "$BUILD_EXIT" != "0" ]; then
+            echo "یکی از مرحله‌ها شکست خورد."
+            exit 1
+          fi
+          echo "همه‌ی مرحله‌ها با موفقیت گذشتند."

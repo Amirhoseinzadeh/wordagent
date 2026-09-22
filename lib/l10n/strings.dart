@@ -308,6 +308,7 @@ class S {
   static const chatClear = 'پاک‌کردن گفت‌وگو';
   static const chatOfflineNote =
       'دستیار فعلی روی دستگاه کار می‌کند و به اینترنت نیاز ندارد.';
+  static const chatFallbackNote = 'پاسخ راهنما';
 
   // --------------------------------------------------------- یادآورها/خطا
   static const noInternet = 'اتصال اینترنت برقرار نیست';

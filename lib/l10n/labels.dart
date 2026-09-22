@@ -154,7 +154,6 @@ extension AchievementMetricLabel on AchievementMetric {
       case AchievementMetric.challengesDone:
         return 'چالش';
       case AchievementMetric.perfectSessions:
-      case AchievementMetric.sessionsDone:
         return 'جلسه';
       case AchievementMetric.listeningCorrect:
       case AchievementMetric.typingCorrect:

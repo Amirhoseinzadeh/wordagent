@@ -334,6 +334,7 @@ class AppController {
     Map<String, ReviewState> appliedStates = const <String, ReviewState>{},
     bool isChallenge = false,
     int sessionXp = 0,
+    bool creditSessionXp = false,
   }) async {
     if (attempts.isEmpty) return _noopOutcome();
     return _finalizeSession(
@@ -342,7 +343,12 @@ class AppController {
       startedAt: startedAt,
       isChallenge: isChallenge,
       precomputedStates: appliedStates,
-      extraRecordedXp: sessionXp,
+      // در جلسه‌های کارتی، امتیاز هر کارت همان لحظه به کیف اضافه شده است؛
+      // پس `sessionXp` فقط در پرونده‌ی جلسه ثبت می‌شود. در جلسه‌هایی مثل
+      // تعیین سطح که امتیاز جایی دیگر خرج نشده، با `creditSessionXp`
+      // همان مقدار هم به کیف کاربر اضافه می‌شود.
+      precomputedXp: creditSessionXp ? sessionXp : 0,
+      extraRecordedXp: creditSessionXp ? 0 : sessionXp,
       recomputeStates: false,
     );
   }
@@ -531,8 +537,9 @@ class AppController {
     stores.xpStore.value = xpState;
     if (challengeCompleted) stores.challengeStore.value = challengeState;
 
-    final levelBefore = XpEngine.levelFor(xpState.totalXp - earnedXp);
-    final levelAfter = XpEngine.levelFor(xpState.totalXp);
+    // امتیاز پیش از این جلسه: امتیاز این فراخوانی (earnedXp) و امتیازهایی
+    // که در جریان همین جلسه ثبت شده‌اند (extraRecordedXp) از کیف کم می‌شوند.
+    final totalBeforeSession = xpState.totalXp - earnedXp - extraRecordedXp;
 
     // دستاوردها (با آمار به‌روزشده)
     final progressStats = const StatsEngine().compute(
@@ -548,7 +555,8 @@ class AppController {
       stats: progressStats,
       totalXp: xpState.totalXp,
       levelDifficulty: profile.level.difficulty,
-      challengesDone: challengeState.completedAt == null ? 0 : challengeState.streakDays,
+      challengesDone:
+          sessions.where((session) => session.kind == SessionKind.challenge).length,
       aiChatMessages: stores.chatStore.value.where((m) => m.isUser).length,
       perfectSessions: perfectSessions,
       listeningCorrect: _sumByType(states, QuizType.listening.name),
@@ -575,6 +583,9 @@ class AppController {
       stores.xpStore.value = xpState;
     }
     stores.achievementsStore.value = achievementsMap;
+
+    final levelBefore = XpEngine.levelFor(totalBeforeSession);
+    final levelAfter = XpEngine.levelFor(xpState.totalXp);
 
     // ذخیره‌سازی
     await progress.saveStates(states);
@@ -690,7 +701,9 @@ class AppController {
         createdAt: clock.now(),
         wordId: reply.wordId,
         suggestions: reply.suggestions,
-        isFallback: true,
+        // تنها وقتی موتور نتوانسته نیت کاربر را تشخیص دهد، پاسخ «راهنمای
+        // عمومی» است؛ در بقیه‌ی حالت‌ها پاسخ واقعی موتور آموزشی است.
+        isFallback: reply.kind == AiReplyKind.unknown,
       ),
     ];
     stores.chatStore.value = chat;
