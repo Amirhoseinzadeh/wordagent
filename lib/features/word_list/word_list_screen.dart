@@ -7,10 +7,10 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
-import '../../core/utils/text_normalizer.dart';
 import '../../domain/entities/cefr_level.dart';
 import '../../domain/entities/review_state.dart';
 import '../../domain/entities/study_session.dart';
+import '../../domain/engines/word_search.dart';
 import '../../domain/entities/word.dart';
 import '../../l10n/labels.dart';
 import '../../l10n/strings.dart';
@@ -41,6 +41,7 @@ class _WordListScreenState extends State<WordListScreen> {
   CefrLevel? _level;
   WordStatus? _status;
   bool _bookmarkedOnly = false;
+  String? _topic;
   _SortMode _sort = _SortMode.frequency;
 
   @override
@@ -50,6 +51,7 @@ class _WordListScreenState extends State<WordListScreen> {
     if (initial != null) {
       _level = CefrLevel.fromCode(initial);
     }
+    _topic = widget.args.topic;
   }
 
   @override
@@ -74,10 +76,9 @@ class _WordListScreenState extends State<WordListScreen> {
   }
 
   List<Word> _apply(List<Word> words, Map<String, ReviewState> states) {
-    final queryEn = TextNormalizer.normalizeEn(_query);
-    final queryFa = TextNormalizer.normalizeFa(_query);
     final filtered = words.where((word) {
       if (_level != null && word.level != _level) return false;
+      if (_topic != null && !word.topics.contains(_topic)) return false;
       final state = states[word.id];
       if (_bookmarkedOnly && !(state?.bookmarked ?? false)) return false;
       if (_status != null) {
@@ -88,12 +89,7 @@ class _WordListScreenState extends State<WordListScreen> {
           return false;
         }
       }
-      if (queryEn.isEmpty) return true;
-      if (TextNormalizer.normalizeEn(word.term).contains(queryEn)) return true;
-      for (final meaning in word.faMeanings) {
-        if (TextNormalizer.normalizeFa(meaning).contains(queryFa)) return true;
-      }
-      return false;
+      return WordSearch.matches(word, _query);
     }).toList(growable: false);
 
     final sorted = List<Word>.of(filtered);
@@ -210,13 +206,17 @@ class _WordListScreenState extends State<WordListScreen> {
                     children: <Widget>[
                       TagChip(
                         label: S.statusAll,
-                        color: _level == null && _status == null && !_bookmarkedOnly
+                        color: _level == null &&
+                                _status == null &&
+                                _topic == null &&
+                                !_bookmarkedOnly
                             ? AppColors.brand
                             : palette.textTertiary,
                         dense: true,
                         onTap: () => setState(() {
                           _level = null;
                           _status = null;
+                          _topic = null;
                           _bookmarkedOnly = false;
                         }),
                       ),
@@ -242,6 +242,16 @@ class _WordListScreenState extends State<WordListScreen> {
                           onTap: () => setState(
                             () => _status = _status == status ? null : status,
                           ),
+                        ),
+                      ],
+                      if (_topic != null) ...<Widget>[
+                        const SizedBox(width: 6),
+                        TagChip(
+                          label: 'موضوع: ${TopicLabels.fa(_topic!)}',
+                          color: palette.info,
+                          dense: true,
+                          icon: Icons.local_offer_outlined,
+                          onTap: () => setState(() => _topic = null),
                         ),
                       ],
                       const SizedBox(width: 6),

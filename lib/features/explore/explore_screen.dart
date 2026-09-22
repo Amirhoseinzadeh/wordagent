@@ -7,9 +7,9 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_palette.dart';
 import '../../core/utils/fa_format.dart';
-import '../../core/utils/text_normalizer.dart';
 import '../../domain/entities/cefr_level.dart';
 import '../../domain/entities/pack.dart';
+import '../../domain/engines/word_search.dart';
 import '../../domain/entities/word.dart';
 import '../../l10n/labels.dart';
 import '../../l10n/strings.dart';
@@ -35,6 +35,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final TextEditingController _search = TextEditingController();
   String _query = '';
   CefrLevel? _levelFilter;
+  String? _topicFilter;
 
   @override
   void dispose() {
@@ -43,24 +44,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   List<Word> _filter(List<Word> words) {
-    final query = TextNormalizer.normalizeEn(_query);
-    final queryFa = TextNormalizer.normalizeFa(_query);
-    return words.where((word) {
-      if (_levelFilter != null && word.level != _levelFilter) return false;
-      if (query.isEmpty) return true;
-      if (TextNormalizer.normalizeEn(word.term).contains(query)) return true;
-      if (TextNormalizer.normalizeFa(word.primaryMeaning).contains(queryFa)) {
-        return true;
-      }
-      for (final meaning in word.faMeanings) {
-        if (TextNormalizer.normalizeFa(meaning).contains(queryFa)) return true;
-      }
-      for (final synonym in word.synonyms) {
-        if (TextNormalizer.normalizeEn(synonym).contains(query)) return true;
-      }
-      return false;
-    }).toList(growable: false);
+    final byTopic = WordSearch.byTopic(words, _topicFilter);
+    final byLevel = _levelFilter == null
+        ? byTopic
+        : byTopic
+            .where((word) => word.level == _levelFilter)
+            .toList(growable: false);
+    return WordSearch.filter(byLevel, _query);
   }
+
+  bool get _hasFilter => _query.isNotEmpty || _levelFilter != null || _topicFilter != null;
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +71,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
       builder: (context) {
         final words = controller.allWords;
         final packs = controller.packs;
-        final results = _query.isEmpty && _levelFilter == null
-            ? const <Word>[]
-            : _filter(words).take(40).toList(growable: false);
+        final results = _hasFilter
+            ? _filter(words).take(40).toList(growable: false)
+            : const <Word>[];
+        final topics = WordSearch.topicCounts(words);
         final bookmarked = controller.states.entries
             .where((entry) => entry.value.bookmarked)
             .map((entry) => entry.key)
@@ -131,7 +125,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       color: _levelFilter == null
                           ? AppColors.brand
                           : palette.textTertiary,
-                      onTap: () => setState(() => _levelFilter = null),
+                      onTap: () => setState(() {
+                        _levelFilter = null;
+                        _topicFilter = null;
+                      }),
                     ),
                     for (final level in CefrLevel.values) ...<Widget>[
                       const SizedBox(width: 6),
@@ -149,10 +146,36 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   ],
                 ),
               ),
+              if (topics.isNotEmpty) ...<Widget>[
+                const SizedBox(height: 6),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      for (final entry in topics.take(12)) ...<Widget>[
+                        TagChip(
+                          label: '${TopicLabels.fa(entry.key)} '
+                              '${FaFormat.digits(entry.value)}',
+                          color: _topicFilter == entry.key
+                              ? AppColors.brand
+                              : palette.textTertiary,
+                          dense: true,
+                          onTap: () => setState(
+                            () => _topicFilter = _topicFilter == entry.key
+                                ? null
+                                : entry.key,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
               if (results.isNotEmpty) ...<Widget>[
                 const SizedBox(height: AppSpacing.md),
                 SectionHeader(
-                  title: 'نتیجه‌ی جست‌وجو',
+                  title: _query.isEmpty ? 'نتیجه‌ی پالایش' : 'نتیجه‌ی جست‌وجو',
                   subtitle: '${FaFormat.digits(results.length)} واژه پیدا شد',
                   icon: Icons.manage_search_rounded,
                 ),
@@ -180,7 +203,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       child: const Text(S.seeAll),
                     ),
                   ),
-              ] else if (_query.isNotEmpty) ...<Widget>[
+              ] else if (_hasFilter) ...<Widget>[
                 const SizedBox(height: AppSpacing.lg),
                 const EmptyStateView(
                   title: S.noResult,
@@ -246,6 +269,37 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                   ],
                 ),
+                if (topics.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: AppSpacing.md),
+                  SectionHeader(
+                    title: 'بر اساس موضوع',
+                    subtitle: 'واژه‌های هر موضوع را جدا مرور کن',
+                    icon: Icons.local_offer_rounded,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: <Widget>[
+                      for (final entry in topics)
+                        TagChip(
+                          label: '${TopicLabels.fa(entry.key)} '
+                              '${FaFormat.digits(entry.value)}',
+                          color: palette.info,
+                          dense: true,
+                          onTap: () => _openList(
+                            context,
+                            WordListArgs(
+                              title: TopicLabels.fa(entry.key),
+                              subtitle: 'واژه‌های موضوع '
+                                  '«${TopicLabels.fa(entry.key)}»',
+                              topic: entry.key,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.md),
                 if (packs.isNotEmpty) ...<Widget>[
                   SectionHeader(

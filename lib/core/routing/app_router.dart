@@ -76,6 +76,7 @@ class WordListArgs {
     this.words,
     this.wordIds,
     this.initialLevel,
+    this.topic,
     this.showFilters = true,
   });
 
@@ -89,6 +90,9 @@ class WordListArgs {
   final List<String>? wordIds;
 
   final String? initialLevel;
+
+  /// فیلتر موضوعی (برچسب `TopicLabels`).
+  final String? topic;
   final bool showFilters;
 }
 
