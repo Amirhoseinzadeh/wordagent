@@ -1,0 +1,30 @@
+# دیالوگ‌های ماندگار فیلم و سریال — قالب: term||جمله||ترجمه||عنوان اثر||سال||گوینده(اختیاری)
+# هر واژه باید با term در فایل‌های words_<level>.txt یکی باشد؛ اگر نباشد، بی‌صدا رد می‌شود.
+offer||I'm going to make him an offer he can't refuse.||می‌خواهم پیشنهادی به او بدهم که نتواند رد کند.||The Godfather||1972||Vito Corleone
+refuse||I'm going to make him an offer he can't refuse.||می‌خواهم پیشنهادی به او بدهم که نتواند رد کند.||The Godfather||1972||Vito Corleone
+family||A man who doesn't spend time with his family can never be a real man.||مردی که با خانواده‌اش وقت نمی‌گذراند هرگز مرد واقعی نیست.||The Godfather||1972||Vito Corleone
+home||There's no place like home.||هیچ‌جا مثل خانه نمی‌شود.||The Wizard of Oz||1939||Dorothy
+tomorrow||Tomorrow is another day.||فردا روز دیگری است.||Gone with the Wind||1939||Scarlett O'Hara
+day||Carpe diem. Seize the day, boys.||در لحظه زندگی کنید؛ روز را غنیمت بشمارید.||Dead Poets Society||1989||John Keating
+swim||Just keep swimming.||فقط همین‌طور شنا کن.||Finding Nemo||2003||Dory
+hope||Hope is a good thing, maybe the best of things.||امید چیز خوبی است، شاید بهترین چیز.||The Shawshank Redemption||1994||Andy Dufresne
+forget||It does not do to dwell on dreams and forget to live.||خوب نیست در رؤیاها بمانی و زندگی کردن را فراموش کنی.||Harry Potter and the Sorcerer's Stone||2001||Albus Dumbledore
+know||I know kung fu.||من کونگ‌فو می‌دانم.||The Matrix||1999||Neo
+game||The game is on.||بازی شروع شده است.||Sherlock||2010||Sherlock Holmes
+hard||It's not about how hard you hit. It's about how hard you can get hit and keep moving forward.||مهم نیست چقدر محکم می‌زنی؛ مهم این است چقدر محکم می‌خوری و باز جلو می‌روی.||Rocky Balboa||2006||Rocky Balboa
+book||A mind needs books like a sword needs a whetstone.||ذهن به کتاب نیاز دارد، همان‌طور که شمشیر به سنگ تیزکن.||Game of Thrones||2011||Tyrion Lannister
+tell||Don't ever let somebody tell you you can't do something.||نگذار کسی به تو بگوید نمی‌توانی کاری را انجام دهی.||The Pursuit of Happyness||2006||Chris Gardner
+yesterday||Yesterday is history, tomorrow is a mystery, today is a gift.||دیروز تاریخ است، فردا راز، امروز هدیه است.||Kung Fu Panda||2008||Master Oogway
+today||Yesterday is history, tomorrow is a mystery, today is a gift.||دیروز تاریخ است، فردا راز است، امروز هدیه است.||Kung Fu Panda||2008||Master Oogway
+cook||Anyone can cook.||هر کسی می‌تواند آشپزی کند.||Ratatouille||2007||Gusteau
+remember||Remember me.||مرا به یاد بیاور.||Coco||2017||Héctor
+morning||Good morning, and in case I don't see ya, good afternoon, good evening, and good night!||صبح بخیر، و اگر نبینمت، عصر بخیر، شب بخیر و شب بخیر!||The Truman Show||1998||Truman Burbank
+night||Good night, and good luck.||شب بخیر و موفق باشید.||Good Night, and Good Luck||2005||Edward R. Murrow
+change||The world is changed.||دنیا تغییر کرده است.||The Lord of the Rings: The Fellowship of the Ring||2001||Galadriel
+impossible||Why, sometimes I've believed as many as six impossible things before breakfast.||چرا، من گاهی پیش از صبحانه به اندازه‌ی شش چیز غیرممکن باور کرده‌ام.||Alice in Wonderland||2010||The Red Queen
+learn||The past can hurt. But the way I see it, you can either run from it or learn from it.||گذشته می‌تواند آزارت دهد؛ ولی به نظر من یا از آن فرار می‌کنی یا از آن یاد می‌گیری.||The Lion King||1994||Rafiki
+run||The past can hurt. But the way I see it, you can either run from it or learn from it.||گذشته می‌تواند آزارت دهد؛ ولی به نظر من یا از آن فرار می‌کنی یا از آن یاد می‌گیری.||The Lion King||1994||Rafiki
+time||All we have to decide is what to do with the time that is given us.||تنها تصمیمی که باید بگیریم این است که با زمانی که به ما داده شده چه کنیم.||The Lord of the Rings: The Fellowship of the Ring||2001||Gandalf
+walk||Of all the gin joints in all the towns in all the world, she walks into mine.||از میان همه‌ی کافه‌های همه‌ی شهرهای دنیا، او وارد مال من شد.||Casablanca||1942||Rick Blaine
+friend||You've got a friend in me.||تو در من دوستی داری.||Toy Story||1995||Randy Newman
+money||Show me the money!||پول را نشانم بده!||Jerry Maguire||1996||Rod Tidwell
