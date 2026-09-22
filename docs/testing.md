@@ -13,6 +13,13 @@ flutter analyze
 (و در تست‌ها از یک ساعت ثابت) عبور می‌کند، هیچ تستی به شبکه، پلتفرم یا
 ساعت واقعی وابسته نیست.
 
+## یکپارچگی مداوم (CI)
+
+گردش‌کار `.github/workflows/ci.yml` روی هر push و Pull Request این زنجیره را
+اجرا می‌کند: `flutter pub get` → `flutter analyze` → `flutter test` →
+`flutter build web --release`. مرحله‌ی آخر مهم است: تضمین می‌کند همه‌ی لایه‌ها
+روی یک پلتفرم واقعی (وب) هم کامپایل می‌شوند.
+
 ## تحلیل ایستای سبک (بدون SDK)
 
 در محیط‌هایی که Flutter نصب نیست، از اسکریپت `tools/dev/dartcheck.mjs` استفاده

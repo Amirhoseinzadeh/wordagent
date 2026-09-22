@@ -36,6 +36,9 @@ flutter test                # اجرای مجموعه‌ی تست
 flutter analyze             # تحلیل ایستا
 ```
 
+همین چهار مرحله به‌صورت خودکار در GitHub Actions نیز اجرا می‌شود
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+
 بررسی سریع محتوا (بدون نیاز به Flutter):
 
 ```bash

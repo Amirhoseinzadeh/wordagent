@@ -1,0 +1,39 @@
+name: CI
+
+# این گردش‌کار همان کاری را انجام می‌دهد که هنگام کار روی پروژه لازم است:
+# وابستگی‌ها، تحلیل ایستا، تست‌ها و یک بیلد واقعی وب (به‌عنوان کنترل نهایی
+# این‌که همه‌ی لایه‌ها روی یک پلتفرم واقعی کامپایل می‌شوند).
+on:
+  push:
+    branches: [main, 'arena/**', 'feature/**', 'fix/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: دریافت کد
+        uses: actions/checkout@v4
+
+      - name: نصب Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: نمایش نسخه‌ی ابزار
+        run: flutter --version
+
+      - name: وابستگی‌ها
+        run: flutter pub get
+
+      - name: تحلیل ایستا
+        run: flutter analyze
+
+      - name: تست‌ها
+        run: flutter test --reporter expanded
+
+      - name: ساخت نسخه‌ی وب (کنترل نهایی کامپایل)
+        run: flutter build web --release
