@@ -88,13 +88,24 @@ class AdSlot extends StatelessWidget {
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pushNamed(AppRoutes.paywall),
-                  child: Text(
-                    S.upgradeCta,
-                    style: const TextStyle(
-                      color: AppColors.brand,
-                      fontWeight: FontWeight.w800,
+                Flexible(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed(AppRoutes.paywall),
+                    child: Text(
+                      S.upgradeCta,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.brand,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ),
