@@ -49,7 +49,7 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final container = AppScope.maybeOf(context);
+    final container = AppScope.readMaybe(context);
     _note.text = container?.controller.states[_word.id]?.note ?? '';
   }
 

@@ -180,6 +180,14 @@ class AppScope extends InheritedWidget {
   static AppContainer? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<AppScope>()?.container;
 
+  /// خواندن اسکوپ بدون ثبت وابستگی.
+  ///
+  /// در `initState` نمی‌توان `dependOnInheritedWidgetOfExactType` را صدا زد
+  /// (خطای «before initState() completed»)؛ برای همان کارهای آغازین از این
+  /// سازنده استفاده می‌شود که فقط مقدار را می‌خواند.
+  static AppContainer? readMaybe(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<AppScope>()?.container;
+
   @override
   bool updateShouldNotify(AppScope oldWidget) => oldWidget.container != container;
 }

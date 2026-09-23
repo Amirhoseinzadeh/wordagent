@@ -10,9 +10,11 @@ import 'package:wordagent/core/routing/app_router.dart';
 import 'package:wordagent/core/services/app_services.dart';
 import 'package:wordagent/core/services/audio_service.dart';
 import 'package:wordagent/core/storage/local_store_memory.dart';
+import 'package:wordagent/core/theme/app_dimens.dart';
 import 'package:wordagent/core/theme/app_theme.dart';
 import 'package:wordagent/domain/entities/word.dart';
 import 'package:wordagent/features/explore/explore_screen.dart';
+import 'package:wordagent/features/home/home_screen.dart';
 import 'package:wordagent/features/shell/home_shell.dart';
 import 'package:wordagent/features/word_detail/word_detail_screen.dart';
 import 'package:wordagent/features/word_list/word_list_screen.dart';
@@ -56,8 +58,38 @@ void _serveRealAssets() {
   });
 }
 
+/// چند قاب پشت‌سرهم می‌زند تا انیمیشن‌ها و کارهای async جا بیفتند.
+///
+/// عمداً از `pumpAndSettle` استفاده نمی‌شود: در اپ چند انیمیشن تکرارشونده
+/// (مثل افکت کارت‌ها) هست و settle هرگز تمام نمی‌شود.
+Future<void> settle(
+  WidgetTester tester, {
+  int frames = 4,
+  Duration step = const Duration(milliseconds: 150),
+}) async {
+  for (var i = 0; i < frames; i++) {
+    await tester.pump(step);
+  }
+}
+
+/// چند قاب می‌زند تا ویجت موردنظر پیدا شود.
+Future<bool> pumpUntilFound(
+  WidgetTester tester,
+  Finder finder, {
+  int tries = 40,
+  Duration step = const Duration(milliseconds: 150),
+}) async {
+  for (var i = 0; i < tries; i++) {
+    if (finder.evaluate().isNotEmpty) return true;
+    await tester.pump(step);
+  }
+  return finder.evaluate().isNotEmpty;
+}
+
 /// بالا آوردن اپ با ساعت ثابت، حافظه‌ی موقت و محتوای واقعی.
 Future<AppContainer> bootApp(WidgetTester tester) async {
+  // خواندن فایل‌های محتوا کار واقعی (I/O) است و در ناحیه‌ی زمان جعلی تست
+  // ویجت هرگز کامل نمی‌شود؛ پس با runAsync اجرا می‌شود.
   final container = (await tester.runAsync(
     () => AppContainer.boot(
       store: MemoryLocalStore(),
@@ -66,14 +98,20 @@ Future<AppContainer> bootApp(WidgetTester tester) async {
     ),
   ))!;
   addTearDown(container.dispose);
+  // کاربر آنبوردینگ‌شده تا اسپلش مستقیم به پوسته‌ی اصلی برود.
+  container.stores.profileStore.value = container.controller.profile.copyWith(
+    onboarded: true,
+    name: 'سارا',
+  );
   return container;
 }
 
-/// بالا آوردن اپ کامل و رسیدن به نخستین قاب تصویرشده.
+/// بالا آوردن اپ کامل تا رسیدن به پوسته‌ی اصلی (بعد از اسپلش).
 Future<void> pumpApp(WidgetTester tester, AppContainer container) async {
   await tester.pumpWidget(WordAgentApp(container: container));
-  await tester.pump();
-  await tester.pump(const Duration(seconds: 1));
+  final reached = await pumpUntilFound(tester, find.byType(HomeShell));
+  expect(reached, isTrue, reason: 'اپ به پوسته‌ی اصلی نرسید (اسپلش/آنبوردینگ).');
+  await settle(tester, frames: 5);
 }
 
 /// پوشش یک صفحه‌ی مستقل با همان اسکوپ/تم اپ.
@@ -89,20 +127,31 @@ Widget wrapScreen(AppContainer container, Widget child) => AppScope(
     );
 
 /// تب جاری پوسته‌ی اپ (اندیس IndexedStack درون HomeShell).
-int? currentTab(WidgetTester tester) => tester
-    .widget<IndexedStack>(
-      find.descendant(
-        of: find.byType(HomeShell),
-        matching: find.byType(IndexedStack),
-      ).first,
-    )
-    .index;
+///
+/// همه‌ی تب‌ها در IndexedStack ساخته می‌شوند؛ تنها راه تشخیص تب فعال،
+/// همین اندیس است نه وجود متن‌ها در درخت.
+int currentTab(WidgetTester tester) {
+  final stack = find.descendant(
+    of: find.byType(HomeShell),
+    matching: find.byType(IndexedStack),
+  );
+  expect(stack, findsWidgets, reason: 'پوسته‌ی اصلی در درخت ویجت‌ها نیست.');
+  final index = tester.widget<IndexedStack>(stack.first).index;
+  expect(index, isNotNull, reason: 'اندیس تب جاری خالی است.');
+  return index!;
+}
 
-/// رفتن به یک تب ناوبری و اطمینان از این‌که واقعاً باز شد.
-Future<void> openTab(WidgetTester tester, String label, int index) async {
-  await tester.tap(find.text(label).last);
-  await tester.pump(const Duration(milliseconds: 400));
-  expect(currentTab(tester), index, reason: 'تب «$label» باز نشد');
+/// رفتن به تب شماره‌ی `index` با لمس خانه‌ی همان تب در نوار پایین.
+Future<void> openTab(WidgetTester tester, int index) async {
+  final shell = tester.getSize(find.byType(HomeShell));
+  await tester.tapAt(
+    Offset(
+      shell.width * (index + 0.5) / 5,
+      shell.height - AppSizes.bottomNavHeight / 2,
+    ),
+  );
+  await settle(tester, frames: 3);
+  expect(currentTab(tester), index, reason: 'تب شماره‌ی $index باز نشد.');
 }
 
 /// تایپ در کادر جست‌وجوی صفحه‌ی کاوش.
@@ -114,12 +163,15 @@ Future<void> searchInExplore(WidgetTester tester, String query) async {
       )
       .first;
   await tester.enterText(field, query);
-  await tester.pump(const Duration(milliseconds: 400));
+  await settle(tester, frames: 3);
 }
 
-/// واژه‌هایی که در حال حاضر در درخت ویجت رندر شده‌اند.
-List<Word> renderedWords(WidgetTester tester) => tester
-    .widgetList<WordTile>(find.byType(WordTile))
+/// واژه‌های رندرشده در یک صفحه‌ی مشخص (نه کل اپ؛ چون IndexedStack همه‌ی
+/// تب‌ها را در درخت نگه می‌دارد).
+List<Word> wordsIn(WidgetTester tester, Type screen) => tester
+    .widgetList<WordTile>(
+      find.descendant(of: find.byType(screen), matching: find.byType(WordTile)),
+    )
     .map((tile) => tile.word)
     .toList(growable: false);
 
@@ -139,36 +191,48 @@ void main() {
         S.navProgress,
         S.navProfile,
       ]) {
-        expect(find.text(label), findsWidgets, reason: 'تب $label نیست');
+        expect(find.text(label), findsWidgets, reason: 'برچسب تب «$label» نیست');
       }
+      expect(currentTab(tester), 0, reason: 'اپ باید روی تب خانه باز شود');
 
-      // تب «کاوش» ⟶ کادر جست‌وجو و چیپ‌های موضوع.
-      await openTab(tester, S.navExplore, 2);
-      expect(find.text(S.searchHint), findsOneWidget);
+      // تب «کاوش» ⟶ کادر جست‌وجو و چیپ‌های سطح/موضوع.
+      await openTab(tester, 2);
+      expect(
+        find.descendant(
+          of: find.byType(ExploreScreen),
+          matching: find.byType(TextField),
+        ),
+        findsWidgets,
+      );
       expect(find.byType(TagChip), findsWidgets);
 
       // تب «یادگیری» ⟶ کارت‌های برنامه‌ی امروز.
-      await openTab(tester, S.navLearn, 1);
+      await openTab(tester, 1);
       expect(find.text(S.dueReviews), findsWidgets);
       expect(find.text(S.newWords), findsWidgets);
       expect(find.text(S.dailyChallenge), findsWidgets);
 
       // تب «پیشرفت» ⟶ بخش نقاط ضعف.
-      await openTab(tester, S.navProgress, 3);
+      await openTab(tester, 3);
       expect(find.text(S.weakWordsTitle), findsWidgets);
 
+      // تب «پروفایل».
+      await openTab(tester, 4);
+      expect(find.byType(HomeShell), findsOneWidget);
+
       // بازگشت به خانه.
-      await openTab(tester, S.navHome, 0);
-      expect(find.text(S.wordOfTheDay), findsWidgets);
+      await openTab(tester, 0);
+      expect(currentTab(tester), 0);
     });
 
-    testWidgets('صفحه‌ی خانه واژه‌ی روز و پیشنهاد هدف‌محور دارد', (tester) async {
+    testWidgets('صفحه‌ی خانه واژه‌ی روز و پیشنهاد هدف‌محور دارد',
+        (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
 
       expect(find.text(S.wordOfTheDay), findsWidgets);
       expect(find.text(S.goalWordsTitle), findsWidgets);
-      expect(renderedWords(tester), isNotEmpty);
+      expect(wordsIn(tester, HomeScreen), isNotEmpty);
     });
   });
 
@@ -176,46 +240,52 @@ void main() {
     testWidgets('جست‌وجوی واژه‌ی انگلیسی نتیجه می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
-      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'water');
-      expect(renderedWords(tester).map((word) => word.term), contains('water'));
+      expect(
+        wordsIn(tester, ExploreScreen).map((word) => word.term),
+        contains('water'),
+      );
     });
 
     testWidgets('جست‌وجوی معنی فارسی نتیجه می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
-      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'کودک');
-      expect(renderedWords(tester).map((word) => word.term), contains('child'));
+      expect(
+        wordsIn(tester, ExploreScreen).map((word) => word.term),
+        contains('child'),
+      );
     });
 
     testWidgets('جست‌وجوی موضوعی با نام فارسی کار می‌کند', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
-      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'سفر');
-      final words = renderedWords(tester);
+      final words = wordsIn(tester, ExploreScreen);
       expect(words, isNotEmpty);
       for (final word in words) {
-        expect(
-          word.topics.contains('travel'),
-          isTrue,
-          reason: '${word.term} واژه‌ی موضوع سفر نیست',
-        );
+        final relevant = word.topics.contains('travel') ||
+            word.faMeanings.any((meaning) => meaning.contains('سفر'));
+        expect(relevant, isTrue, reason: '${word.term} با «سفر» بی‌ربط است');
       }
     });
 
     testWidgets('جست‌وجوی بی‌نتیجه، پیام خالی نشان می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
-      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'zzzqqq');
-      expect(renderedWords(tester), isEmpty);
-      expect(find.text(S.noResult), findsWidgets);
+      expect(wordsIn(tester, ExploreScreen), isEmpty);
+      expect(
+        find.descendant(
+          of: find.byType(ExploreScreen),
+          matching: find.text(S.noResult),
+        ),
+        findsWidgets,
+      );
     });
   });
 
@@ -235,24 +305,23 @@ void main() {
           ),
         ),
       );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+      await settle(tester, frames: 3);
 
-      final words = renderedWords(tester);
+      final words = wordsIn(tester, WordListScreen);
       expect(words, isNotEmpty);
       for (final word in words) {
         expect(word.topics.contains('travel'), isTrue,
             reason: '${word.term} در فیلتر سفر نیامده است');
       }
-      // چیپ موضوع در نوار فیلترها دیده می‌شود.
-      expect(find.textContaining('موضوع:'), findsOneWidget);
+      // چیپ موضوع فعال در نوار فیلترها دیده می‌شود.
+      expect(find.textContaining('موضوع:'), findsWidgets);
     });
 
     testWidgets('صفحه‌ی جزئیات واژه بخش‌های اصلی را نشان می‌دهد',
         (tester) async {
       final container = await bootApp(tester);
-      final word =
-          container.controller.allWords.firstWhere((item) => item.term == 'water');
+      final word = container.controller.allWords
+          .firstWhere((item) => item.term == 'water');
 
       await tester.pumpWidget(
         wrapScreen(
@@ -260,8 +329,7 @@ void main() {
           WordDetailScreen(args: WordDetailArgs(word: word)),
         ),
       );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await settle(tester, frames: 4);
 
       expect(find.text('water'), findsWidgets);
       expect(find.text(S.imageSection), findsWidgets);

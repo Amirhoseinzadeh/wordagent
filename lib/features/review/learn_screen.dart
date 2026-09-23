@@ -58,7 +58,7 @@ class _LearnScreenState extends State<LearnScreen> {
   @override
   void initState() {
     super.initState();
-    final container = AppScope.maybeOf(context);
+    final container = AppScope.readMaybe(context);
     container?.audio.warmUp();
   }
 
