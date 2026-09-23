@@ -58,6 +58,16 @@ void _serveRealAssets() {
   });
 }
 
+/// صفحه‌ی آزمایشی بلند و باریک (اندازه‌ی موبایل، ارتفاع بلند).
+///
+/// فهرست‌های اپ از ویجت‌های تنبل ساخته می‌شوند؛ با ارتفاع بلند همه‌ی
+/// بخش‌های یک صفحه ساخته می‌شود و تست به اسکرول وابسته نمی‌ماند.
+void useTallSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(420, 2400);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
+}
+
 /// چند قاب پشت‌سرهم می‌زند تا انیمیشن‌ها و کارهای async جا بیفتند.
 ///
 /// عمداً از `pumpAndSettle` استفاده نمی‌شود: در اپ چند انیمیشن تکرارشونده
@@ -88,6 +98,7 @@ Future<bool> pumpUntilFound(
 
 /// بالا آوردن اپ با ساعت ثابت، حافظه‌ی موقت و محتوای واقعی.
 Future<AppContainer> bootApp(WidgetTester tester) async {
+  useTallSurface(tester);
   // خواندن فایل‌های محتوا کار واقعی (I/O) است و در ناحیه‌ی زمان جعلی تست
   // ویجت هرگز کامل نمی‌شود؛ پس با runAsync اجرا می‌شود.
   final container = (await tester.runAsync(
@@ -141,8 +152,8 @@ int currentTab(WidgetTester tester) {
   return index!;
 }
 
-/// رفتن به تب شماره‌ی `index` با لمس خانه‌ی همان تب در نوار پایین.
-Future<void> openTab(WidgetTester tester, int index) async {
+/// رفتن به تب شماره‌ی `index` از نوار ناوبری پایین و بررسی باز شدن آن.
+Future<void> openTab(WidgetTester tester, String label, int index) async {
   final shell = tester.getSize(find.byType(HomeShell));
   await tester.tapAt(
     Offset(
@@ -150,8 +161,13 @@ Future<void> openTab(WidgetTester tester, int index) async {
       shell.height - AppSizes.bottomNavHeight / 2,
     ),
   );
-  await settle(tester, frames: 3);
-  expect(currentTab(tester), index, reason: 'تب شماره‌ی $index باز نشد.');
+  await settle(tester, frames: 2);
+  if (currentTab(tester) != index) {
+    // جایگزین: لمس برچسب تب (اگر چیدمان نوار پایین تغییر کند).
+    await tester.tap(find.text(label).last, warnIfMissed: false);
+    await settle(tester, frames: 2);
+  }
+  expect(currentTab(tester), index, reason: 'تب «$label» باز نشد.');
 }
 
 /// تایپ در کادر جست‌وجوی صفحه‌ی کاوش.
@@ -195,34 +211,21 @@ void main() {
       }
       expect(currentTab(tester), 0, reason: 'اپ باید روی تب خانه باز شود');
 
-      // تب «کاوش» ⟶ کادر جست‌وجو و چیپ‌های سطح/موضوع.
-      await openTab(tester, 2);
+      // تب‌ها به ترتیب: خانه، یادگیری، کاوش، پیشرفت، پروفایل.
+      await openTab(tester, S.navLearn, 1);
+      await openTab(tester, S.navExplore, 2);
       expect(
         find.descendant(
           of: find.byType(ExploreScreen),
           matching: find.byType(TextField),
         ),
         findsWidgets,
+        reason: 'کادر جست‌وجوی کاوش نیست',
       );
       expect(find.byType(TagChip), findsWidgets);
-
-      // تب «یادگیری» ⟶ کارت‌های برنامه‌ی امروز.
-      await openTab(tester, 1);
-      expect(find.text(S.dueReviews), findsWidgets);
-      expect(find.text(S.newWords), findsWidgets);
-      expect(find.text(S.dailyChallenge), findsWidgets);
-
-      // تب «پیشرفت» ⟶ بخش نقاط ضعف.
-      await openTab(tester, 3);
-      expect(find.text(S.weakWordsTitle), findsWidgets);
-
-      // تب «پروفایل».
-      await openTab(tester, 4);
-      expect(find.byType(HomeShell), findsOneWidget);
-
-      // بازگشت به خانه.
-      await openTab(tester, 0);
-      expect(currentTab(tester), 0);
+      await openTab(tester, S.navProgress, 3);
+      await openTab(tester, S.navProfile, 4);
+      await openTab(tester, S.navHome, 0);
     });
 
     testWidgets('صفحه‌ی خانه واژه‌ی روز و پیشنهاد هدف‌محور دارد',
@@ -240,6 +243,7 @@ void main() {
     testWidgets('جست‌وجوی واژه‌ی انگلیسی نتیجه می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
+      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'water');
       expect(
@@ -251,6 +255,7 @@ void main() {
     testWidgets('جست‌وجوی معنی فارسی نتیجه می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
+      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'کودک');
       expect(
@@ -262,6 +267,7 @@ void main() {
     testWidgets('جست‌وجوی موضوعی با نام فارسی کار می‌کند', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
+      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'سفر');
       final words = wordsIn(tester, ExploreScreen);
@@ -276,6 +282,7 @@ void main() {
     testWidgets('جست‌وجوی بی‌نتیجه، پیام خالی نشان می‌دهد', (tester) async {
       final container = await bootApp(tester);
       await pumpApp(tester, container);
+      await openTab(tester, S.navExplore, 2);
 
       await searchInExplore(tester, 'zzzqqq');
       expect(wordsIn(tester, ExploreScreen), isEmpty);

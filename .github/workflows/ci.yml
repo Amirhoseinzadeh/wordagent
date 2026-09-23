@@ -98,7 +98,7 @@ jobs:
             echo
             echo "### جزئیات خطاهای تست"
             echo '```'
-            grep -B1 -A14 '\[E\]' test.txt | head -c 22000
+            grep -B18 -A18 '\[E\]' test.txt | head -c 28000
             echo '```'
             echo
             echo "### flutter analyze (فقط ایرادها)"
