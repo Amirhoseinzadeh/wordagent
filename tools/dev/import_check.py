@@ -29,7 +29,7 @@ AppBar Theme ThemeData ColorScheme TextTheme MediaQuery Navigator Route Material
 RouteSettings WidgetBuilder TransitionBuilder Curve Curves FadeTransition SlideTransition ScaleTransition
 AnimatedBuilder Tween AnimationController Duration TickerProviderStateMixin SingleTickerProviderStateMixin
 CustomPainter Canvas Paint PaintingStyle Path PathMetric RRects RRect StrokeCap StrokeJoin BlendMode
-Brightness CircularProgressIndicator LinearProgressIndicator
+Brightness CircularProgressIndicator LinearProgressIndicator IndexedStack
 ScrollController ScrollPhysics ListView SingleChildScrollView CustomScrollView SliverList SliverGrid
 GridView Wrap Stack Positioned GestureDetector InkWell Ink ClipRRect ClipOval Opacity Visibility
 AnimatedContainer AnimatedOpacity AnimatedSwitcher Hero FractionallySizedBox AspectRatio Spacer
