@@ -186,7 +186,7 @@ class S {
   static const wordImageSoon = 'تصویر این واژه به‌زودی';
   static const examplesSection = 'مثال‌ها';
   static const conversationSection = 'در مکالمه';
-  static const mediaSection = 'در فیلم و سریال';
+  static const mediaSection = 'جمله‌های ماندگار';
   static const collocationsSection = 'کالوکیشن‌ها';
   static const synonymsSection = 'مترادف‌ها';
   static const antonymsSection = 'متضادها';

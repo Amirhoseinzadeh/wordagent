@@ -45,7 +45,7 @@ door||Open the pod bay doors, HAL.||دریچه‌های محفظه را باز �
 read||We read and write poetry because we are members of the human race.||شعر می‌خوانیم و می‌نویسیم چون عضوی از نسل بشریم.||Dead Poets Society||1989||John Keating
 write||Write drunk, edit sober.||مست بنویس، هوشیار ویرایش کن.||Misattributed to Hemingway||1964||Ernest Hemingway
 speak||I am the Lorax. I speak for the trees.||من لوراکس هستم؛ به‌جای درخت‌ها حرف می‌زنم.||The Lorax||2012||The Lorax
-ask||Ask and it will be given to you.||بخواه تا به تو داده شود.||The Bible (Matthew 7:7)||1611||Jesus
+ask||You've got to ask yourself one question: “Do I feel lucky?”||باید از خودت یک سؤال بپرسی: «آیا احساس شانس می‌کنم؟»||Dirty Harry||1971||Harry Callahan
 give||It is in giving that we receive.||در بخشیدن است که می‌گیریم.||The Prayer of St. Francis||1912||St. Francis
 open||Open your mind.||ذهنت را باز کن.||The Matrix||1999||Morpheus
 close||A door closes, a window opens.||دری بسته می‌شود، پنجره‌ای باز می‌شود.||The Sound of Music||1965||Maria

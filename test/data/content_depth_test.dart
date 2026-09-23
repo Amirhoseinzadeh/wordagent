@@ -268,14 +268,14 @@ void main() {
     });
   });
 
-  group('دیالوگ‌های فیلم و سریال', () {
-    test('بیش از ۵۰ واژه دیالوگ سینمایی دارند', () {
+  group('جمله‌های ماندگار (فیلم، سریال، ترانه و جمله‌های نام‌آور)', () {
+    test('بیش از ۵۰ واژه جمله‌ی ماندگار دارند', () {
       final withMedia =
           bundle.words.where((word) => word.movieLines.isNotEmpty).length;
       expect(withMedia, greaterThanOrEqualTo(50), reason: 'شمار: $withMedia');
     });
 
-    test('هر دیالوگ متن، ترجمه و عنوان اثر دارد', () {
+    test('هر جمله متن، ترجمه و عنوان منبع دارد', () {
       for (final word in bundle.words) {
         for (final line in word.movieLines) {
           expect(line.line.trim(), isNotEmpty, reason: word.term);
@@ -289,7 +289,7 @@ void main() {
       }
     });
 
-    test('دیالوگ هر واژه با خود واژه یا شکل صرفی‌اش می‌خواند', () {
+    test('هر جمله با خود واژه یا شکل صرفی‌اش می‌خواند', () {
       final offenders = <String>[];
       for (final word in bundle.words) {
         for (final line in word.movieLines) {
@@ -303,7 +303,7 @@ void main() {
           }
         }
       }
-      expect(offenders, isEmpty, reason: 'دیالوگ بی‌ربط: $offenders');
+      expect(offenders, isEmpty, reason: 'جمله‌ی بی‌ربط: $offenders');
     });
   });
 

@@ -846,7 +846,7 @@ def main() -> int:
     forms = sum(1 for word in words if word.get("forms"))
     rich = sum(1 for word in words if len(word.get("col", [])) >= 2)
     print(
-        f"\nجمع: {len(words)} واژه، {media_count} دیالوگ سینمایی، {len(packs)} بسته،"
+        f"\nجمع: {len(words)} واژه، {media_count} جمله‌ی ماندگار، {len(packs)} بسته،"
         f" {tagged} واژه برچسب‌دار، {forms} واژه با شکل‌های صرفی،"
         f" {rich} واژه با دو کالوکیشن یا بیشتر"
     )
