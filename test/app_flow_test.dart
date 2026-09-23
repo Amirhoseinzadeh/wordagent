@@ -46,12 +46,29 @@ class _SilentAudio implements AudioService {
   void dispose() {}
 }
 
-/// باندل دارایی‌های واقعی مخزن (همان محتوایی که کاربر می‌بیند).
+/// مانیفست دارایی‌ها با همان قالب دودویی‌ای که ابزار فلاتر می‌سازد
+/// (کلید دارایی ⟶ فهرست گونه‌ها). بدون آن، `Image.asset` در تست نمی‌تواند
+/// دارایی‌ها را پیدا کند و «Unable to load asset: AssetManifest.bin» می‌دهد.
+ByteData _assetManifest() {
+  final entries = <String, Object?>{};
+  for (final entity in Directory('assets').listSync(recursive: true)) {
+    if (entity is! File) continue;
+    final key = entity.path.replaceAll('\\', '/');
+    entries[key] = <Object?>[
+      <Object?, Object?>{'asset': key, 'dpr': 1.0},
+    ];
+  }
+  return const StandardMessageCodec().encodeMessage(entries)!;
+}
+
+/// باندل دارایی‌های واقعی مخزن (همان محتوایی که کاربر می‌بیند) + مانیفست.
 void _serveRealAssets() {
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  final manifest = _assetManifest();
   messenger.setMockMessageHandler('flutter/assets', (message) async {
     final key = utf8.decode(message!.buffer.asUint8List());
+    if (key == 'AssetManifest.bin') return manifest;
     final file = File(key);
     if (!file.existsSync()) return null;
     return ByteData.sublistView(Uint8List.fromList(file.readAsBytesSync()));
