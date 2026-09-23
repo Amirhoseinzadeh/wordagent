@@ -1,0 +1,191 @@
+# تکمیل کالوکیشن‌های واژه‌های پرکاربرد
+# قالب: term||+ترکیب‌ها(؛)   → افزودن به ترکیب‌های موجود
+#        term||=ترکیب‌ها(؛)   → جای‌گزینی کامل ترکیب‌های موجود
+# هر ترکیب باید خودِ واژه (یا شکل صرفی‌اش) را داشته باشد؛ چون تمرین
+# «کالوکیشن» همین ترکیب را به‌عنوان پاسخ درست نشان می‌دهد.
+because||+just because؛mainly because
+again||+all over again؛time and again
+company||+start a company؛company policy
+different||+completely different؛a different way
+government||+government policy؛local government
+system||+operating system؛a system of rules
+today||=later today؛today's news؛by today
+support||+support a family؛strong support
+actually||=actually true؛actually happened
+law||+law and order؛by law
+maybe||+maybe later؛maybe tomorrow
+hope||+hope for the best؛give up hope
+able||+able to help؛perfectly able
+local||+local news؛local community
+young||+young people؛too young
+probably||+most probably
+cause||+cause a problem؛the main cause
+series||+a series of
+community||+community centre؛a sense of community
+deal||+deal with؛a great deal
+form||+a form of؛in good form
+available||+available online؛readily available
+education||+education system؛get an education
+sometimes||=sometimes late؛only sometimes
+example||+a clear example؛an example of
+experience||+a lot of experience؛learn from experience
+chance||+by chance؛a second chance
+instead||+instead of that؛do it instead
+issue||+the main issue؛a political issue
+similar||+very similar؛similar in size
+event||+a big event؛the main event
+result||+the final result؛a good result
+guess||+have a guess؛your best guess
+society||+society as a whole؛a free society
+role||+an important role؛the main role
+provide||+provide information؛provide support
+relationship||+a close relationship؛a long-term relationship
+evidence||+evidence of؛scientific evidence
+amount||+a small amount؛the total amount
+match||+win the match؛a close match
+trust||+trust me؛build trust
+review||+review a decision؛under review
+attention||+attention to detail؛get attention
+quality||+quality of life؛poor quality
+serious||+a serious problem؛serious injury
+decision||+a difficult decision؛the right decision
+entire||+the entire world؛an entire week
+situation||+in this situation؛a new situation
+technology||+new technology؛information technology
+continue||+continue to grow؛continue with
+seem||+seem like؛seem strange
+simple||+a simple question؛keep it simple
+staff||+staff meeting؛a member of staff
+career||+a career change؛start a career
+figure||+a public figure؛figure it out
+popular||+a popular choice
+goal||+score a goal؛achieve a goal
+success||+a great success؛achieve success
+offer||+a job offer؛an offer of help
+risk||+a serious risk؛at risk
+percent||+ten percent
+culture||+pop culture؛culture shock
+respect||+earn respect؛respect for
+specific||+a specific example
+standard||=high standards؛by any standard؛meet the standard
+create||+create a problem؛create value
+effect||+a side effect؛have an effect
+tomorrow||+tomorrow morning؛the day after tomorrow
+potential||=reach your potential؛full potential؛a great potential
+station||+a train station؛a police station
+despite||+despite everything؛despite the rain
+focus||+focus attention؛a clear focus
+consider||+consider a plan؛seriously consider
+extra||+extra money؛an extra hour
+significant||+a significant difference؛statistically significant
+ability||+natural ability
+knowledge||+general knowledge؛gain knowledge
+claim||+make a claim؛a claim for
+fit||+keep fit؛a good fit
+judge||+judge a book by its cover؛judge for yourself
+leader||+a strong leader؛become a leader
+opportunity||+a missed opportunity؛an equal opportunity
+degree||+a university degree؛to some degree
+approach||+a practical approach؛a different approach
+independent||+an independent country؛independent of
+effort||+a lot of effort؛spare no effort
+imagine||+imagine a world؛can you imagine
+lack||+a lack of time؛for lack of
+yesterday||+yesterday morning؛late yesterday
+notice||+at short notice؛notice a change
+explain||+explain clearly؛explain the reason
+challenge||+face a challenge؛a real challenge
+purpose||+the main purpose؛for this purpose
+responsible||+a responsible person؛held responsible
+avoid||+avoid a mistake؛avoid the risk
+environment||+a quiet environment؛a safe environment
+complex||+a complex system؛too complex
+condition||+a medical condition؛under these conditions
+serve||+serve a customer؛serve dinner
+slow||+a slow start
+airport||+a big airport؛airport security
+demand||+demand for؛meet the demand
+solution||+a perfect solution؛a quick solution
+structure||+a simple structure؛the social structure
+worry||+worry too much
+realize||+realize a mistake؛realize the truth
+remain||+remain silent؛remain the same
+separate||+a separate room؛separate ways
+surface||+the earth's surface؛a smooth surface
+benefit||+a health benefit؛for the benefit of
+budget||+a tight budget؛a low budget
+feature||+a useful feature؛a safety feature
+hill||+down the hill؛a steep hill
+village||+a fishing village؛a village school
+apply||+apply to a university؛apply the rules
+authority||+the local authorities؛in authority
+spread||+spread a rumour؛spread quickly
+method||+a new method؛a scientific method
+handle||+handle a situation؛handle it carefully
+prevent||+prevent a disease
+advantage||+a clear advantage؛competitive advantage
+aware||+well aware
+function||+a body function؛function properly
+impossible||+nearly impossible؛impossible to say
+influence||+a strong influence؛under the influence
+progress||+good progress؛slow progress
+require||=require attention؛require patience؛be required to
+prove||+prove a point؛prove yourself
+balance||+a fine balance؛lose balance
+develop||+develop a habit؛develop a product
+raise||+raise a question؛raise children
+suggest||+suggest a plan؛strongly suggest
+treat||+treat an illness
+unique||+a unique opportunity؛absolutely unique
+variety||+a wide variety
+appreciate||+really appreciate؛appreciate the effort
+strategy||+a business strategy؛a long-term strategy
+honest||+an honest answer؛be honest with
+mention||+forget to mention
+reduce||+reduce costs؛greatly reduce
+stress||+reduce stress؛a lot of stress
+initial||+the initial plan؛initial results
+capacity||+a seating capacity؛the capacity to learn
+ensure||+ensure safety
+limit||+a time limit؛within limits
+behavior||+human behavior؛change behavior
+ancient||+ancient times؛an ancient city
+exercise||+regular exercise؛take exercise
+appeal||+a strong appeal
+appropriate||+appropriate behaviour؛appropriate to
+factor||+a major factor؛an important factor
+schedule||+a busy schedule؛ahead of schedule
+discuss||+discuss a plan؛discuss in detail
+perform||+perform well؛perform a play
+confidence||+lose confidence؛gain confidence
+equal||+an equal chance؛roughly equal
+maintain||+maintain a car؛maintain the quality
+task||+a difficult task؛a simple task
+argument||+a strong argument؛win an argument
+conflict||+a conflict of interest؛end a conflict
+escape||+a narrow escape
+fault||+find fault؛through no fault of mine
+friendly||+a friendly face؛a friendly atmosphere
+talent||+a natural talent؛show talent
+context||+in this context؛out of context
+determine||+determine the cause؛hard to determine
+obvious||+for obvious reasons؛obvious to everyone
+capable||+a capable worker؛perfectly capable
+customer||+a loyal customer؛customer support
+essential||+absolutely essential؛essential to
+fail||+fail to do؛fail a test
+familiar||+a familiar face؛familiar to
+recommend||+highly recommend؛recommend a book
+relevant||+directly relevant؛relevant information
+facility||+a medical facility؛modern facilities
+learn from||+learn from mistakes؛learn from each other
+remember to||+remember to check؛try to remember to
+improve on||+improve on a record؛improve on last year
+free time||+a lot of free time؛in my free time
+admonish||+admonish a child؛admonish gently
+idiosyncrasy||+a harmless idiosyncrasy
+juxtapose||+juxtapose two images
+good||=a good idea؛good at something؛a good reason
+understand||=understand the question؛fully understand؛make yourself understood
+restaurant||=a good restaurant؛a restaurant meal؛reserve a table
+criterion||+a strict criterion

@@ -1,0 +1,143 @@
+# این گردش‌کار همان کاری را انجام می‌دهد که هنگام کار روی پروژه لازم است:
+# وابستگی‌ها، تحلیل ایستا، تست‌ها و یک بیلد واقعی وب (به‌عنوان کنترل نهایی
+# این‌که همه‌ی لایه‌ها روی یک پلتفرم واقعی کامپایل می‌شوند).
+#
+# خروجی هر مرحله در یک کامنت روی همان کامیت منتشر می‌شود تا نتیجه‌ی
+# analyze/test/build از هر محیطی قابل خواندن باشد.
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  analyze-and-test:
+    name: analyze-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: دریافت کد
+        uses: actions/checkout@v4
+
+      - name: نصب Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: نمایش نسخه‌ی ابزار
+        run: flutter --version
+
+      - name: وابستگی‌ها
+        run: flutter pub get
+
+      # هر مرحله مستقل و با سقف زمانی اجرا می‌شود تا یک توقف (مثلاً تست
+      # بی‌پایان) بقیه‌ی بازخورد را از بین نبرد.
+      - name: تحلیل ایستا
+        continue-on-error: true
+        timeout-minutes: 12
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1
+          echo "ANALYZE_EXIT=$?" > analyze.status
+          tail -3 analyze.txt
+
+      - name: تست‌ها
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          set +e
+          flutter test --reporter expanded --timeout 60s > test.txt 2>&1
+          echo "TEST_EXIT=$?" > test.status
+          tail -3 test.txt
+
+      - name: ساخت نسخه‌ی وب (کنترل نهایی کامپایل)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          set +e
+          flutter build web --release > build.txt 2>&1
+          echo "BUILD_EXIT=$?" > build.status
+          tail -3 build.txt
+
+      - name: گزارش
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          {
+            echo "## CI report — \`${GITHUB_SHA:0:7}\`"
+            echo
+            echo '```'
+            for stage in analyze test build; do
+              if [ -f "$stage.status" ]; then cat "$stage.status"; else echo "${stage}_EXIT=missing"; fi
+            done
+            echo '```'
+            echo
+            echo "### تست‌های شکست‌خورده (فهرست)"
+            echo '```'
+            grep -A200 '^Failing tests:' test.txt | head -c 2500
+            echo '```'
+            echo
+            echo "### جزئیات خطاهای تست"
+            echo '```'
+            grep -B18 -A18 '\[E\]' test.txt | head -c 28000
+            echo '```'
+            echo
+            echo "### flutter analyze (فقط ایرادها)"
+            echo '```'
+            grep -E '(error|warning|info) •' analyze.txt | head -c 14000
+            echo
+            echo '... [tail] ...'
+            tail -c 1200 analyze.txt
+            echo '```'
+            echo
+            echo "### flutter test (انتهای خروجی)"
+            echo '```'
+            tail -c 6000 test.txt
+            echo '```'
+            echo
+            echo "### flutter build web"
+            echo '```'
+            tail -c 3000 build.txt
+            echo '```'
+          } > report.raw.md
+          head -c 60000 report.raw.md > report.md
+          wc -c report.raw.md report.md
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            -F body=@report.md && echo 'comment posted' || echo 'comment failed'
+
+      - name: نتیجه‌ی نهایی
+        run: |
+          set +e
+          for stage in analyze test build; do
+            if [ -f "$stage.status" ]; then
+              cat "$stage.status"
+            else
+              echo "مرحله‌ی $stage به پایان نرسید (توقف یا خطای اجرا)."
+              exit 1
+            fi
+          done
+          if grep -q '_EXIT=0' analyze.status && grep -q '_EXIT=0' test.status && grep -q '_EXIT=0' build.status; then
+            echo "همه‌ی مرحله‌ها با موفقیت گذشتند."
+            exit 0
+          fi
+          echo "یکی از مرحله‌ها شکست خورد."
+          exit 1

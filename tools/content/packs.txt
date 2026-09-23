@@ -1,0 +1,25 @@
+# بسته‌های موضوعی — قالب: شناسه||عنوان||توضیح||ایموجی||واژه‌ها(با ؛)||سطح||پریمیوم(۱)
+# واژه‌ها باید دقیقاً با term در فایل‌های words_<level>.txt یکی باشند.
+pack_first100||نخستین واژه‌ها||شروع از این‌جا؛ ۱۰۰ واژه‌ی پایه برای هر تازه‌آموز||🌱||time؛ day؛ year؛ people؛ man؛ woman؛ child؛ friend؛ family؛ home؛ school؛ work؛ water؛ food؛ book؛ name؛ city؛ country||a1
+pack_travel||سفر و گردش||واژه‌های لازم برای سفر، هتل و فرودگاه||🧳||travel؛ trip؛ arrive؛ depart؛ ticket؛ luggage؛ hotel؛ reserve؛ map؛ direction؛ flight؛ airport؛ station||a2
+pack_nature||طبیعت و آب‌وهوا||درباره‌ی هوا، فصل‌ها و محیط اطراف حرف بزن||🌦️||weather؛ rain؛ snow؛ sun؛ hill؛ village؛ environment؛ energy؛ ancient||a2
+pack_home||خانه و خانواده||واژه‌های روزمره‌ی خانه و زندگی||🏠||home؛ house؛ family؛ room؛ door؛ neighbor؛ guest؛ water؛ help؛ together||a1
+pack_food||غذا و آشپزی||سفارش دادن، پختن و توصیف طعم||🍽️||food؛ eat؛ drink؛ cook؛ recipe؛ menu؛ order؛ delicious؛ taste؛ restaurant؛ healthy||a2
+pack_work||کار و حرفه||واژه‌های محیط کار و استخدام||💼||job؛ office؛ company؛ manager؛ interview؛ career؛ employee؛ employ؛ achieve؛ achievement؛ earn؛ opportunity||b1
+pack_study||آموزش و مطالعه||واژه‌های مدرسه، دانشگاه و یادگیری||🎓||school؛ learn؛ study؛ practice؛ exam؛ education؛ knowledge؛ graduate؛ degree؛ skill؛ mistake؛ learn from||b1
+pack_health||سلامت و بدن||واژه‌های پزشکی و سلامت روزمره||🩺||healthy؛ ill؛ medicine؛ doctor؛ pain؛ appointment؛ energy؛ sleep؛ gym؛ exercise؛ relax||b1
+pack_body||بدن و احساس‌ها||اعضای بدن و واژه‌های حال روزانه||❤️||hand؛ head؛ eye؛ face؛ heart؛ happy؛ sad؛ love؛ worry؛ hope؛ courage؛ confident||a1
+pack_tech||فناوری و اینترنت||گوشی، اینترنت و شبکه‌های اجتماعی||📱||phone؛ internet؛ website؛ download؛ search؛ message؛ photo؛ share؛ send؛ receive؛ technology؛ system؛ feature||b1
+pack_shopping||پول و خرید||خرید کردن، قیمت و بودجه||💳||money؛ price؛ cheap؛ expensive؛ cost؛ buy؛ pay؛ budget؛ spend؛ save؛ customer؛ deal؛ currency||b1
+pack_thinking||فکر و استدلال||واژه‌های اندیشیدن، دلیل و تصمیم||🧠||think؛ idea؛ reason؛ decide؛ decision؛ explain؛ argue؛ argument؛ consider؛ assume؛ analyze؛ conclude||b2
+pack_society||جامعه و فرهنگ||درباره‌ی مردم، قانون و سنت حرف بزن||🏙️||society؛ culture؛ community؛ citizen؛ government؛ law؛ tradition؛ neighbor؛ volunteer؛ respect؛ authority؛ bias||b2
+pack_media||فیلم و سرگرمی||سینما، موسیقی، ورزش و بازی||🎬||movie؛ music؛ song؛ party؛ game؛ match؛ sport؛ team؛ photo؛ series؛ hobby||a2
+pack_core_verbs||فعل‌های پرکاربرد||فعل‌های پایه‌ای که هر روز لازم داری||🔧||come؛ go؛ get؛ give؛ take؛ make؛ know؛ see؛ look؛ want؛ need؛ like؛ use؛ find؛ help؛ try||a1
+pack_character||احساس و شخصیت||توصیف حال و اخلاق آدم‌ها||🌤️||anxious؛ ambitious؛ generous؛ honest؛ polite؛ confident؛ curious؛ patience؛ grateful؛ admire؛ appreciate؛ bother||b2
+pack_academic||واژه‌های دانشگاهی||واژه‌های آکادمیک برای مقاله و پژوهش||📚||acknowledge؛ ambiguous؛ coherent؛ consensus؛ criterion؛ empirical؛ hypothesis؛ paradigm؛ plausible؛ refute؛ significant؛ substantial؛ valid؛ assess؛ evaluate||c1||1
+pack_writing||نوشتار پیشرفته||واژه‌های دقیق برای نوشتن حرفه‌ای||✍️||articulate؛ cohesion؛ elaborate؛ eloquent؛ lucid؛ meticulous؛ nuance؛ conspicuous؛ explicit؛ implicit؛ comprehensive||c1||1
+pack_business||کسب‌وکار و مذاکره||واژه‌های مذاکره، طرح و رشد||📈||leverage؛ incentive؛ negotiate؛ promote؛ propose؛ strategy؛ feasible؛ implement؛ facilitate؛ budget؛ substantial؛ commence؛ comply||c1||1
+pack_argument||بحث و استدلال پیشرفته||واژه‌های نقد، شواهد و نتیجه‌گیری||⚖️||contradict؛ refute؛ corroborate؛ fallacy؛ conjecture؛ bias؛ discriminate؛ distinguish؛ imply؛ evident||c1||1
+pack_literary||زبان ادبی||واژه‌های کتابی و ادبی برای خواندن رمان||🕯️||ephemeral؛ enigmatic؛ insidious؛ formidable؛ austere؛ benevolent؛ fervent؛ altruism؛ lament؛ cryptic؛ daunting||c2||1
+pack_exam||آماده‌سازی آزمون||واژه‌های کلیدی آزمون‌های بین‌المللی||🎯||accurate؛ adequate؛ assess؛ conclude؛ consequence؛ criterion؛ evaluate؛ significant؛ strategy؛ comprehensive؛ indicate||b2||1
+pack_emotions||احساس‌های پیشرفته||واژه‌های دقیق برای حالات پیچیده||🌀||ambivalent؛ apprehensive؛ complacent؛ adamant؛ reluctant؛ dubious؛ indifferent؛ prone؛ contentious؛ disdain||c2||1

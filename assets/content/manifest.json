@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "generatedFrom": "tools/content/*.txt",
+  "totalWords": 838,
+  "levels": {
+    "a1": 117,
+    "a2": 106,
+    "b1": 192,
+    "b2": 193,
+    "c1": 115,
+    "c2": 115
+  },
+  "mediaLines": 55,
+  "packs": 23,
+  "byPartOfSpeech": {
+    "v": 371,
+    "n": 239,
+    "adj": 202,
+    "adv": 19,
+    "phr": 4,
+    "conj": 2,
+    "prep": 1
+  },
+  "topicTags": {
+    "academic": 167,
+    "work": 162,
+    "society": 138,
+    "business": 128,
+    "feelings": 121,
+    "thought": 121,
+    "daily": 112,
+    "science": 108,
+    "media": 89,
+    "study": 80,
+    "health": 62,
+    "people": 57,
+    "time": 42,
+    "tech": 39,
+    "money": 37,
+    "travel": 31,
+    "sports": 25,
+    "nature": 18,
+    "food": 13,
+    "home": 9,
+    "body": 8
+  },
+  "withForms": 748,
+  "withCollocations": 369
+}
