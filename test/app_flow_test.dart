@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,7 +89,7 @@ Widget wrapScreen(AppContainer container, Widget child) => AppScope(
     );
 
 /// تب جاری پوسته‌ی اپ (اندیس IndexedStack درون HomeShell).
-int currentTab(WidgetTester tester) => tester
+int? currentTab(WidgetTester tester) => tester
     .widget<IndexedStack>(
       find.descendant(
         of: find.byType(HomeShell),
@@ -252,7 +251,8 @@ void main() {
     testWidgets('صفحه‌ی جزئیات واژه بخش‌های اصلی را نشان می‌دهد',
         (tester) async {
       final container = await bootApp(tester);
-      final word = container.allWords.firstWhere((item) => item.term == 'water');
+      final word =
+          container.controller.allWords.firstWhere((item) => item.term == 'water');
 
       await tester.pumpWidget(
         wrapScreen(
