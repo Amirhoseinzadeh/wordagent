@@ -711,19 +711,30 @@ def build_words(
 
 # ------------------------------------------------------------------ رسانه‌ها
 
-def attach_media(words: list[dict]) -> int:
+def attach_media(words: list[dict]) -> tuple[int, list[str]]:
     rows = read_lines(os.path.join(CONTENT_DIR, "media_lines.txt"))
     if not rows:
-        return 0
+        return 0, []
     index = {word["term"].lower(): word for word in words}
     attached = 0
-    for row in rows:
+    problems: list[str] = []
+    seen: set[tuple[str, str]] = set()
+    for position, row in enumerate(rows, start=1):
         if len(row) < 5:
+            problems.append(f"media_lines.txt:{position} فیلدهای ناکافی ({len(row)})")
             continue
         term, line, fa, title = row[0], row[1], row[2], row[3]
         word = index.get(term.lower())
         if word is None:
+            problems.append(f"media_lines.txt:{position} واژه‌ی ناشناخته: {term}")
             continue
+        if not line.strip() or not fa.strip() or not title.strip():
+            problems.append(f"media_lines.txt:{position} متن/ترجمه/عنوان خالی: {term}")
+            continue
+        if (word["id"], line) in seen:
+            problems.append(f"media_lines.txt:{position} دیالوگ تکراری برای {term}")
+            continue
+        seen.add((word["id"], line))
         item = {"line": line, "fa": fa, "title": title}
         if len(row) > 4 and row[4]:
             item["year"] = int(row[4])
@@ -731,7 +742,7 @@ def attach_media(words: list[dict]) -> int:
             item["who"] = row[5]
         word.setdefault("media", []).append(item)
         attached += 1
-    return attached
+    return attached, problems
 
 
 # -------------------------------------------------------------------- بسته‌ها
@@ -777,7 +788,7 @@ def main() -> int:
     ranks = dict(previous_ranks)
     ranks.update(frequency)
     words, warnings = build_words(cmu, ranks, topics, previous_ipa, extras)
-    media_count = attach_media(words)
+    media_count, media_problems = attach_media(words)
     packs = build_packs(words)
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -821,13 +832,13 @@ def main() -> int:
         json.dump(manifest, handle, ensure_ascii=False, indent=2)
     print("  ✓ manifest.json")
 
-    problems = list(topic_problems) + list(extra_problems)
+    problems = list(topic_problems) + list(extra_problems) + list(media_problems)
     if warnings:
         print(f"\n{len(warnings)} هشدار:")
         for item in warnings[:40]:
             print("   -", item)
     if problems:
-        print(f"\n{len(problems)} ایراد در برچسب‌های موضوعی:")
+        print(f"\n{len(problems)} ایراد در داده‌های ورودی:")
         for item in problems[:40]:
             print("   -", item)
 

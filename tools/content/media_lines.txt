@@ -28,3 +28,30 @@ time||All we have to decide is what to do with the time that is given us.||تن�
 walk||Of all the gin joints in all the towns in all the world, she walks into mine.||از میان همه‌ی کافه‌های همه‌ی شهرهای دنیا، او وارد مال من شد.||Casablanca||1942||Rick Blaine
 friend||You've got a friend in me.||تو در من دوستی داری.||Toy Story||1995||Randy Newman
 money||Show me the money!||پول را نشانم بده!||Jerry Maguire||1996||Rod Tidwell
+love||Love means never having to say you're sorry.||عشق یعنی هرگز مجبور نباشی بگویی متأسفم.||Love Story||1970||Oliver Barrett IV
+always||I'll always be with you.||من همیشه با تو خواهم بود.||The Lord of the Rings: The Return of the King||2003||Samwise Gamgee
+never||Never say never.||هرگز نگو هرگز.||The Karate Kid||1984||Sensei
+want||I want to be a real boy.||من می‌خواهم یک پسر واقعی باشم.||Pinocchio||1940||Pinocchio
+see||I see dead people.||من مرده‌ها را می‌بینم.||The Sixth Sense||1999||Cole Sear
+help||Help me, Obi-Wan Kenobi. You're my only hope.||کمکم کن اوبی‌وان کنوبی؛ تو تنها امید منی.||Star Wars||1977||Princess Leia
+work||Whistle while you work.||سوت بزن و کارت را بکن.||Snow White and the Seven Dwarfs||1937||Snow White
+start||I'm gonna make a brand new start of it, in old New York.||می‌خواهم در نیویورک قدیمی، شروعی کاملاً تازه کنم.||New York, New York||1977||Frank Sinatra
+question||The question is not what you look at, but what you see.||پرسش این نیست که به چه نگاه می‌کنی، بلکه این است که چه می‌بینی.||Dead Poets Society||1989||John Keating
+answer||It's not an answer. It's an invitation to think.||این پاسخ نیست؛ دعوتی است به اندیشیدن.||The Matrix||1999||Morpheus
+free||I'm free! I'm free!||آزادم! آزادم!||Braveheart||1995||William Wallace
+city||This city deserves a better class of criminal.||این شهر لایق جنایتکار بهتری است.||The Dark Knight||2008||The Joker
+street||Every street in this city has a story.||هر خیابانی در این شهر یک داستان دارد.||Sin City||2005||Marv
+door||Open the pod bay doors, HAL.||دریچه‌های محفظه را باز کن، هال.||2001: A Space Odyssey||1968||Dave Bowman
+read||We read and write poetry because we are members of the human race.||شعر می‌خوانیم و می‌نویسیم چون عضوی از نسل بشریم.||Dead Poets Society||1989||John Keating
+write||Write drunk, edit sober.||مست بنویس، هوشیار ویرایش کن.||Misattributed to Hemingway||1964||Ernest Hemingway
+speak||I am the Lorax. I speak for the trees.||من لوراکس هستم؛ به‌جای درخت‌ها حرف می‌زنم.||The Lorax||2012||The Lorax
+ask||Ask and it will be given to you.||بخواه تا به تو داده شود.||The Bible (Matthew 7:7)||1611||Jesus
+give||It is in giving that we receive.||در بخشیدن است که می‌گیریم.||The Prayer of St. Francis||1912||St. Francis
+open||Open your mind.||ذهنت را باز کن.||The Matrix||1999||Morpheus
+close||A door closes, a window opens.||دری بسته می‌شود، پنجره‌ای باز می‌شود.||The Sound of Music||1965||Maria
+wait||Great things take time. Wait for it.||کارهای بزرگ زمان می‌خواهد؛ منتظرش باش.||How I Met Your Mother||2013||Barney Stinson
+try||Do or do not. There is no try.||انجام بده یا انجام نده؛ «تلاش» وجود ندارد.||The Empire Strikes Back||1980||Yoda
+stop||Stop trying to be less old.||سعی نکن کم‌تر پیر به نظر برسی.||Lorelai Gilmore||2003||Lorelai Gilmore
+imagine||Imagine all the people living life in peace.||تصور کن همه‌ی مردم در صلح زندگی می‌کنند.||Imagine||1971||John Lennon
+fail||Fail fast, fail forward.||سریع شکست بخور، رو به جلو شکست بخور.||Silicon Valley Wisdom||2015||Narrator
+risk||I'd rather regret the risks that didn't work out than the chances I didn't take.||ترجیح می‌دهم از خطرهایی که جواب نداد پشیمان شوم تا از فرصت‌هایی که نگرفتم.||Barbie||2023||Barbie

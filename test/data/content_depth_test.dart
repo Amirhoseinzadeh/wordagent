@@ -268,6 +268,45 @@ void main() {
     });
   });
 
+  group('دیالوگ‌های فیلم و سریال', () {
+    test('بیش از ۵۰ واژه دیالوگ سینمایی دارند', () {
+      final withMedia =
+          bundle.words.where((word) => word.movieLines.isNotEmpty).length;
+      expect(withMedia, greaterThanOrEqualTo(50), reason: 'شمار: $withMedia');
+    });
+
+    test('هر دیالوگ متن، ترجمه و عنوان اثر دارد', () {
+      for (final word in bundle.words) {
+        for (final line in word.movieLines) {
+          expect(line.line.trim(), isNotEmpty, reason: word.term);
+          expect(line.fa.trim(), isNotEmpty, reason: word.term);
+          expect(line.sourceTitle.trim(), isNotEmpty, reason: word.term);
+          expect(RegExp(r'[\u0600-\u06FF]').hasMatch(line.fa), isTrue,
+              reason: 'ترجمه‌ی بی‌فارسی برای ${word.term}');
+          expect(line.year == null || line.year! > 1900, isTrue,
+              reason: 'سال نامعتبر برای ${word.term}');
+        }
+      }
+    });
+
+    test('دیالوگ هر واژه با خود واژه یا شکل صرفی‌اش می‌خواند', () {
+      final offenders = <String>[];
+      for (final word in bundle.words) {
+        for (final line in word.movieLines) {
+          final haystack = line.line.toLowerCase();
+          final forms = <String>{
+            word.term.toLowerCase(),
+            ...word.forms.map((form) => form.value.toLowerCase()),
+          };
+          if (!forms.any(haystack.contains)) {
+            offenders.add('${word.term} → ${line.line}');
+          }
+        }
+      }
+      expect(offenders, isEmpty, reason: 'دیالوگ بی‌ربط: $offenders');
+    });
+  });
+
   group('تصاویر واژه‌ها', () {
     test('مسیر هر تصویر روی دیسک موجود است', () {
       final broken = <String>[];
